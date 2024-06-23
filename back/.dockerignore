@@ -1,0 +1,7 @@
+node_modules
+.DockerFile*
+.dockerignore
+# /src/config.env
+__test__
+dist
+.tsconfig.json

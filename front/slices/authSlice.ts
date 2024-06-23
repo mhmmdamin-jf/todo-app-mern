@@ -1,8 +1,6 @@
 "use client";
-import store from "@/store";
 import { fetcher, poster } from "@/utils/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
 interface authSliceProps {
   formType: string;
   isLoggedIn: boolean;
