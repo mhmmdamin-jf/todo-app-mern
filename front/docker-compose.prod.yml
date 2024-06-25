@@ -1,0 +1,7 @@
+services:
+  todo-front:
+    environment:
+      - NODE_ENV:production
+      - PORT:3000
+    volumes:
+      - /app/node_modules

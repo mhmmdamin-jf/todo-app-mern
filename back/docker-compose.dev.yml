@@ -1,0 +1,9 @@
+services:
+  todo-app:
+    environment:
+      - PORT=3005
+      - NODE_ENV=development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: npm run dev

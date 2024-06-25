@@ -1,11 +1,16 @@
 FROM node:slim
 WORKDIR /app
 COPY package.json .
-RUN npm install
 COPY . ./
 COPY ./src/devData ./dist/devData
 COPY ./src/config.env ./dist/config.env
+RUN npm install typescript
 RUN npx tsc
+RUN if [ "$NODE_ENV" = "development" ]; then \
+      npm install; \
+    else \
+      npm install --only=production; \
+    fi
 ENV PORT=3002
 EXPOSE ${PORT}
-CMD [ "npm","run","start" ]
+CMD ["node","./dist/server.js"]

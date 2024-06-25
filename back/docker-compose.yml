@@ -1,16 +1,7 @@
-version: "3"
 services:
   todo-app:
-    # image:node:slim
-    # working_dir:/app
     build: .
     ports:
-      - "3006:3006"
+      - "3005:3005"
     env_file:
       - ./src/config.env
-    environment:
-      - PORT=3005
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    command: -npm install & npx tsc & npm run start
