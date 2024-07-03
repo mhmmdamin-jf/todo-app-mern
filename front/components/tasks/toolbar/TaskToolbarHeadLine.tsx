@@ -5,9 +5,11 @@ import { Col, Row } from "react-bootstrap";
 import TaskTitleContainer from "./TaskTitleContainer";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
+import { EnhancedStore } from "@reduxjs/toolkit";
 
 function TaskToolbarHeadLine() {
-  const { showLeft } = useSelector((store) => store.sideBarSlice);
+  //@ts-ignore
+  const { showLeft } = useSelector((store:EnhancedStore) => store.sideBarSlice as any);
   return (
     <Box>
       <Col>

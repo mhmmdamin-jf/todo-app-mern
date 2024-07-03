@@ -17,12 +17,20 @@ const fs_1 = require("fs");
 const todoModel_1 = require("../Model/todoModel");
 const userModel_1 = __importDefault(require("../Model/userModel"));
 const APIError_1 = __importDefault(require("../utils/APIError"));
+const categoryModel_1 = require("../Model/categoryModel");
 const todos = JSON.parse((0, fs_1.readFileSync)(`${__dirname}/todos.json`, { encoding: "utf-8" }));
 const users = JSON.parse((0, fs_1.readFileSync)(`${__dirname}/users.json`, { encoding: "utf-8" }));
+const categories = JSON.parse((0, fs_1.readFileSync)(`${__dirname}/categories.json`, { encoding: "utf-8" }));
 /**
  * function for deleting all data from databases: todo , user and ...
  */
 const deleteAllData = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield categoryModel_1.categoryModel.deleteMany();
+    }
+    catch (err) {
+        throw new APIError_1.default({ message: "cannot delete cateories.", errorCode: 400 });
+    }
     try {
         yield todoModel_1.todo.deleteMany();
     }
@@ -42,17 +50,47 @@ exports.deleteAllData = deleteAllData;
  */
 const importData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield todoModel_1.todo.create(todos);
-        console.log("todos imported.");
+        yield categoryModel_1.categoryModel.create(categories);
+        console.log("categories imported.");
     }
     catch (err) {
-        throw new APIError_1.default({ message: "cannot import todo", errorCode: 400 });
+        throw new APIError_1.default({
+            message: "cannot import categories.",
+            errorCode: 400,
+        });
     }
     try {
         yield userModel_1.default.create(users);
         console.log("users imported.");
     }
     catch (err) {
+        throw new APIError_1.default({ message: "cannot import todo", errorCode: 400 });
+    }
+    try {
+        const defaultUser = yield userModel_1.default.create({
+            userName: "defaultUser1",
+            password: "user1Pass@",
+            passwordChangedAt: Date.now(),
+            role: "user",
+        });
+        const defaultUser1 = yield userModel_1.default.create({
+            userName: "defaultUser2",
+            password: "user1Pass@",
+            passwordChangedAt: Date.now(),
+            role: "user",
+        });
+        const todayCategory = yield todoModel_1.todo.findOne({ title: "today" });
+        const changedTodos = todos.map((todo, i) => {
+            if (i % 2 == 0) {
+                return Object.assign(Object.assign({}, todo), { user: defaultUser1._id, category: todayCategory === null || todayCategory === void 0 ? void 0 : todayCategory._id });
+            }
+            return Object.assign(Object.assign({}, todo), { user: defaultUser._id, category: todayCategory === null || todayCategory === void 0 ? void 0 : todayCategory._id });
+        });
+        yield todoModel_1.todo.create(changedTodos);
+        console.log("todos imported.");
+    }
+    catch (err) {
+        console.log(err);
         throw new APIError_1.default({ message: "cannot import todo", errorCode: 400 });
     }
 });

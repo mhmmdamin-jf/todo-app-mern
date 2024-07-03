@@ -1,21 +1,27 @@
 "use client";
-import { useTheme } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import React from "react";
-import TaskDataGrid from "../ui/TaskDataGrid";
-import TaskDataList, { taskType } from "@/components/ui/TaskDataList";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/index";
+import TaskDataList from "@/components/ui/TaskDataList";
 import { useParams, usePathname } from "next/navigation";
-import { getTasks } from "@/slices/taskSlice";
+import { useTasks } from "@/hooks/useTasks";
 function Tasks() {
-  const theme = useTheme();
-  const dispatcher = useDispatch<AppDispatch>();
   const currentCategory = usePathname().split("/")[-1];
-  const tasks = dispatcher(getTasks({ category: currentCategory }));
-  console.log(tasks);
+  const { data: tasks, isPending } = useTasks({ category: currentCategory });
+  if (isPending)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          py: 5,
+        }}
+      >
+        <CircularProgress sx={{ mx: "auto" }} />
+      </Box>
+    );
   return (
     <TaskDataList
-      cells={tasks}
+      cells={tasks?.payload}
       // cells={[
       //   {
       //     id: "q2",

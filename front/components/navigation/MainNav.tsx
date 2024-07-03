@@ -1,4 +1,5 @@
 "use client";
+import { toggleShowSideBarFeedBack } from "@/slices/sideBarSlice";
 import { toggleShowSideBarRight } from "@/slices/sideBarSlice";
 import {
   AppsRounded,
@@ -56,6 +57,7 @@ export default function MainNav() {
               color: theme.palette.common.white,
               fontSize: 16,
               marginInlineStart: isSmUpView ? 1.5 : isMdUpView ? 0 : 2.5,
+              bgcolor: "red",
             }}
           >
             To Do
@@ -69,9 +71,8 @@ export default function MainNav() {
               borderRadius: 1,
               py: 0.5,
               px: 1,
-              mx: "auto",
+              ml: 23,
               position: "relative",
-
               "&:hover": {
                 bgcolor: theme.palette.background.paper,
               },
@@ -116,8 +117,10 @@ export default function MainNav() {
               </Col>
               {isMdUpView && (
                 <>
-                  <Col sm={{ span: "1" }}>
-                    <Button>
+                  <Col xs={{ span: "1" }}>
+                    <Button
+                      onClick={() => dispatcher(toggleShowSideBarFeedBack())}
+                    >
                       <QuestionMark />
                     </Button>
                   </Col>
@@ -131,7 +134,7 @@ export default function MainNav() {
               <Col xs={{ span: "1" }}>
                 <Button
                   sx={{
-                    "& .MuiAvatar-root": { width: 0.5, height: 25, padding: 1 },
+                    "& .MuiAvatar-root": { width: 0.8, height: 39 },
                   }}
                 >
                   <Avatar

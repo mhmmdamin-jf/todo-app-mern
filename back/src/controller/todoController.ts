@@ -32,7 +32,7 @@ export const getAllTodos = async (
   let todos = new Todo({ query: req.query, queryString: todo });
   todos = todos.filter().sort();
   const todoData = await todo
-    .find()
+    .find({ user: { $eq: { _id: req?.body?.user?._id } } })
     .populate({
       path: "user",
       select: "name",
@@ -63,12 +63,14 @@ export const getInDayTodos = catchAsync(
             $lte: Date.now() + Number(process.env.START_DATE_TO_TASK),
             $gte: Date.now(),
           },
+          user: { $eq: { _id: req?.body?.user?._id } },
         },
       },
     ]);
     if (!todos) {
       next(new APIError({ message: "cant find any todo.", errorCode: 404 }));
     }
+    console.log(todos);
     sendSuccessData(res, todos);
   }
 );
@@ -99,6 +101,7 @@ export const getCustomDateTodos = catchAsync(
             $lte: startDate,
             $gte: endDate,
           },
+          user: { $eq: { _id: req?.body?.user?._id } },
         },
       },
     ]);
@@ -122,6 +125,7 @@ export const getCompletedTasks = catchAsync(
           isCompleted: {
             $eq: true,
           },
+          user: { $eq: { _id: req?.body?.user?._id } },
         },
       },
     ]);

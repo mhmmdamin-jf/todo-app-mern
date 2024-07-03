@@ -10,11 +10,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { EnhancedStore } from "@reduxjs/toolkit";
 import React from "react";
 import { useSelector } from "react-redux";
 
 function TaskToolbarActions() {
-  const { showRight } = useSelector((store) => store.sideBarSlice);
+  //@ts-ignore
+  const { showRight } = useSelector((store:EnhancedStore) => store.sideBarSlice as any);
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   return (

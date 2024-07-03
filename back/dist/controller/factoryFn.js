@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOne = exports.getAll = exports.updateOne = exports.addOne = exports.deleteOne = exports.sendSuccessData = void 0;
 const catchAsync_1 = require("../utils/catchAsync");
 const APIError_1 = __importDefault(require("../utils/APIError"));
-const todoModel_1 = require("../Model/todoModel");
 /**
  * factory function for sending response with success status
  * @param {Response} res
@@ -24,8 +23,11 @@ const todoModel_1 = require("../Model/todoModel");
  */
 const sendSuccessData = (res, data, code) => {
     const resCode = code || 200;
-    res.header("Access-Control-Allow-Origin", "http://localhost:3001");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    // res.header(
+    //   "Access-Control-Allow-Headers",
+    //   "Origin, X-Requested-With, Content-Type, Accept"
+    // );
     res.status(resCode).json({
         status: "success",
         data,
@@ -57,7 +59,7 @@ exports.deleteOne = deleteOne;
 const addOne = (model) => (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(model, req.body);
-        const doc = yield todoModel_1.todo.create(req.body);
+        const doc = yield model.create(req.body);
         (0, exports.sendSuccessData)(res, doc, 201);
     }
     catch (err) {

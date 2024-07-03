@@ -5,3 +5,4 @@ export const authRoutes = {
 };
 export const allowedRoutes = ["/", ...Object.values(authRoutes)];
 export const defaultRedirectRoute = "/tasks/today";
+export const defaultRoute = "/";

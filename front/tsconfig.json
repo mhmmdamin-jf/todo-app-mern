@@ -36,6 +36,11 @@
     "utils/dateFns.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".storybook",
+    "cypress",
+    "stories",
+    "components/ui/**.stories.tsx",
+    "./cypress.config.json",
   ]
 }

@@ -19,20 +19,19 @@ export default function RootLayout({
     <CookiesProvider>
       <AppQueryClient>
         <Provider store={store}>
-          <ThemeContext.Provider value={{ toggleTheme, mode: appTheme }}>
-            <html lang="en">
-              <body>
-                <ReactQueryDevtools initialIsOpen={false} />
-                <AppRouterCacheProvider>
-                  <ThemeProvider theme={theme}>
-                    <CssBaseline />
-
-                    {children}
-                  </ThemeProvider>
-                </AppRouterCacheProvider>
-              </body>
-            </html>
-          </ThemeContext.Provider>
+          <CssBaseline />
+          <ThemeProvider theme={theme}>
+            <ThemeContext.Provider value={{ toggleTheme, mode: appTheme }}>
+              <html lang="en">
+                <body>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                  <AppRouterCacheProvider>
+                    <div id="parent-contain">{children}</div>
+                  </AppRouterCacheProvider>
+                </body>
+              </html>
+            </ThemeContext.Provider>
+          </ThemeProvider>
         </Provider>
       </AppQueryClient>
     </CookiesProvider>

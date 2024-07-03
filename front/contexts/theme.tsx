@@ -1,5 +1,6 @@
 "use client";
-import { createTheme } from "@mui/material";
+import { createTheme, PaletteMode } from "@mui/material";
+
 import { Roboto } from "next/font/google";
 import { createContext, useContext, useMemo, useState } from "react";
 const fontName = Roboto({
@@ -8,7 +9,7 @@ const fontName = Roboto({
 });
 
 export const tokens = (mode: string) =>
-  mode === "light"
+  mode === "dark"
     ? {
         primary: {
           100: "#d3e0f5",
@@ -22,7 +23,7 @@ export const tokens = (mode: string) =>
           900: "#071429",
         },
         gray: {
-          100: "#d3d3d3",
+          100: "#e9e9e9",
           200: "#a8a7a7",
           300: "#7c7c7b",
           400: "#51504f",
@@ -54,7 +55,7 @@ export const tokens = (mode: string) =>
           600: "#51504f",
           700: "#7c7c7b",
           800: "#a8a7a7",
-          900: "#d3d3d3",
+          900: "#e9e9e9",
         },
       };
 
@@ -65,31 +66,26 @@ export const themeSettings = (mode: string) => {
       rose: {
         main: "#bf2f4a",
       },
-      background: { paper: "#e2e4d2" },
       ...(mode === "dark"
         ? {
-            priamry: {
-              main: colors.primary[500],
-            },
-            gray: {
-              main: colors.gray[500],
-            },
-
+            // priamry: {
+            //   main: colors.primary[500],
+            // },
+            // gray: {
+            //   main: colors.gray[500],
+            // },
+            ...colors,
             // background: {
             //   default: "#fcfcfc",
             // },
+            background: { paper: "#e2e4d2", default: "#222" },
           }
         : {
-            priamry: {
-              main: colors.primary[500],
-            },
-            gray: {
-              main: colors.gray[500],
-            },
-
+            ...colors,
             // background: {
             //   default: "#11100f",
             // },
+            background: { paper: "#e2e4d2", default: "#eee" },
           }),
     },
     typography: {
@@ -104,7 +100,7 @@ export const themeSettings = (mode: string) => {
 };
 
 export type themeContextType = {
-  mode: "dark" | "light";
+  mode: PaletteMode;
   toggleTheme: Function | void;
 };
 
@@ -119,17 +115,18 @@ export const ThemeContext = createContext<themeContextType>(
 
 export function useTheme() {
   const { mode } = useContext(ThemeContext);
-  const [appTheme, setAppTheme] = useState<"dark" | "light">(mode);
+  const [appTheme, setAppTheme] = useState<"dark" | "light">("light");
   const toggleTheme = () => {
-    appTheme === "dark" ? setAppTheme("light") : setAppTheme("dark");
+    setAppTheme(appTheme === "dark" ? "light" : "dark");
   };
-  const theme = useMemo(() => createTheme(themeSettings(appTheme)), [appTheme]);
+  console.log(appTheme);
+  const settings = themeSettings(appTheme);
+  const theme = createTheme(settings);
   const values = {
-    mode: appTheme,
+    appTheme,
     toggleTheme,
   };
-
-  return { theme, appTheme, toggleTheme };
+  return { theme, ...values };
   // (
   //   <ThemeContext.Provider value={values}>{children}</ThemeContext.Provider>
   // );

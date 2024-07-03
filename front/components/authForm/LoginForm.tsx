@@ -21,12 +21,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas/index";
 import { useDispatch, useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
-import { setFormType, signInUser } from "@/slices/authSlice";
+import {
+  setFormType,
+  setShowSnackbar,
+  setSnackbarText,
+  signInUser,
+} from "@/slices/authSlice";
 import { fetcher } from "@/utils/axios";
 import axios from "axios";
 import store from "@/store";
 import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
+import { EnhancedStore } from "@reduxjs/toolkit";
 export type resolverErrorPathTypes =
   | "userName"
   | "password"
@@ -35,7 +41,10 @@ export type resolverErrorPathTypes =
 export default function LoginForm() {
   const [cookie, setCookie] = useCookies(["jwt"]);
   const theme = useTheme();
-  const { isLoggedIn, userData } = useSelector((store) => store.authSlice);
+  const { isLoggedIn, userData } = useSelector(
+    //@ts-ignore
+    (store: EnhancedStore) => store.authSlice as any
+  );
   const form = useForm<zod.infer<typeof loginSchema>>({
     defaultValues: { password: "", userName: "" },
     resolver: zodResolver(loginSchema),
@@ -56,13 +65,15 @@ export default function LoginForm() {
           });
         });
       }
-      await dispatcher(signInUser(formData));
-
+      const loginResault = await dispatcher(signInUser(formData));
       if (isLoggedIn) {
-        router.push("/tasks/today");
+        dispatcher(setShowSnackbar("Logged in successfully"));
         // Cookie.set("jwt", userData.token);
-        // setCookie("jwt", userData.token);
-        // cookies().set("jwt", userData.token);
+        setCookie("jwt", userData.token, {
+          secure: false,
+          expires: new Date(Date.now() + 1000 * 3600 * 24 * 90),
+        });
+        router.push("/tasks/today");
       }
       // if(isLoggedIn){
 
@@ -72,7 +83,9 @@ export default function LoginForm() {
   const handleBlur = (e: SyntheticEvent) => {
     //@ts-ignore
     if (!e.target.value) {
+      //@ts-ignore
       form.setError(e.target?.name, {
+        //@ts-ignore
         message: `${e.target?.name} is required.`,
       });
     }
@@ -143,6 +156,7 @@ export default function LoginForm() {
               aria-description="password"
               {...form.register("userName")}
               name="password"
+              type="password"
               onChange={(e) => form.setValue("password", e.target.value)}
               error={!!form.formState.errors.password}
               helperText={form.formState.errors.password?.message}
@@ -194,7 +208,7 @@ export default function LoginForm() {
           </Button>
         )}
         {lableNumber === 2 && (
-          <Button id="button-done" onClick={submitHandler}>
+          <Button type="submit" id="button-done" onClick={submitHandler}>
             Done
           </Button>
         )}

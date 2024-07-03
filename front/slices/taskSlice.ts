@@ -1,5 +1,6 @@
-import { fetcher, poster } from "@/utils/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 interface TaskDataProps {
   tasks: any;
   error: null | Error;
@@ -26,23 +27,38 @@ const taskSlice = createSlice({
 
 export const addTask = createAsyncThunk(
   "postTask/taskSlice",
-  async (formData: any) => {
-    const postResautl = await poster(
-      `${process.env.serverHostName}/todo`,
-      formData
+  async ({ values }: { values: any }) => {
+    values.dueDate = new Date(values.dueDate);
+    const postResautl = await axios.post(
+      `http://127.0.0.1:3002/api/todo`,
+      values,
+      {
+        withCredentials: true,
+        // headers: {
+        //   Cookie: `jwt=${jwt}`,
+        // },
+      }
     );
-    return postResautl;
+    console.log(
+      12121212121212,
+      postResautl.headers,
+      postResautl.config,
+      postResautl.request
+    );
+    return postResautl.data;
   }
 );
 
 export const getTasks = createAsyncThunk(
   "fetchToday/taskSlice",
   async ({ category = "today" }: { category: string }) => {
-    const todayTasks = await fetcher({
-      url: `http://127.0.0.1:3002/api/todo/${category}`,
-    });
-    console.log(todayTasks);
-    return todayTasks;
+    const todayTasks = await axios.get(
+      `http://127.0.0.1:3002/api/todo/${category}`,
+      {
+        withCredentials: true,
+      }
+    );
+    return todayTasks?.data?.data;
   }
 );
 

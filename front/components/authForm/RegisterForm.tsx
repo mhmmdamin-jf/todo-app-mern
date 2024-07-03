@@ -19,11 +19,13 @@ import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, registerSchema } from "@/schemas/index";
 import { useDispatch, useSelector } from "react-redux";
-import { setFormType, signUpUser } from "@/slices/authSlice";
+import { setFormType, setShowSnackbar, signUpUser } from "@/slices/authSlice";
 import { AppDispatch } from "@/store/index";
 import { fetcher, poster } from "@/utils/axios";
 import store from "@/store/index";
 import { useRouter } from "next/navigation";
+import { EnhancedStore } from "@reduxjs/toolkit";
+import { useCookies } from "react-cookie";
 export type resolverErrorPathTypes =
   | "userName"
   | "password"
@@ -32,8 +34,11 @@ export type resolverErrorPathTypes =
   | `root.${string}`;
 export default function RegisterForm() {
   const theme = useTheme();
-  const { isLoggedIn } = useSelector((store) => store.authSlice);
-
+  const { isLoggedIn, userData } = useSelector(
+    //@ts-ignore
+    (store: EnhancedStore) => store.authSlice as any
+  );
+  const [cookie, setCookie] = useCookies(["jwt"]);
   const form = useForm<zod.infer<typeof registerSchema>>({
     defaultValues: { password: "", userName: "", confirmPassword: "" },
     resolver: zodResolver(loginSchema),
@@ -55,7 +60,13 @@ export default function RegisterForm() {
         });
       }
       await dispatcher(signUpUser(formData));
+      console.log(process.env);
       if (isLoggedIn) {
+        dispatcher(setShowSnackbar("Signed up successfully"));
+        setCookie("jwt", userData.token, {
+          secure: true,
+          expires: new Date(Date.now() + 1000 * 3600 * 24 * 90),
+        });
         router.push("/tasks/today");
       }
     });
@@ -63,7 +74,9 @@ export default function RegisterForm() {
   const handleBlur = (e: SyntheticEvent) => {
     //@ts-ignore
     if (!e.target.value) {
+      //@ts-ignore
       form.setError(e.target?.name, {
+        //@ts-ignore
         message: `${e.target?.name} is required.`,
       });
     }
@@ -130,6 +143,7 @@ export default function RegisterForm() {
           id="input-password"
           control={
             <TextField
+              type="password"
               name="password"
               error={!!form.formState.errors.password}
               helperText={form.formState.errors.password?.message}
@@ -147,6 +161,7 @@ export default function RegisterForm() {
           id="input-confirm-password"
           control={
             <TextField
+              type="password"
               name="confirmPassword"
               onChange={(e) => form.setValue("confirmPassword", e.target.value)}
               error={!!form.formState.errors.confirmPassword}
@@ -200,8 +215,8 @@ export default function RegisterForm() {
           </Button>
         )}
         {lableNumber === 2 && (
-          <Button id="button-done" onClick={submitHandler}>
-            Done
+          <Button type="submit" id="button-done" onClick={submitHandler}>
+            {isPending ? "loading" : "Done"}
           </Button>
         )}
       </ButtonGroup>

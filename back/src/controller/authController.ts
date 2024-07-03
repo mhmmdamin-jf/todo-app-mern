@@ -30,12 +30,6 @@ const cookieOptions = {
  * @returns {Function} signJWT
  */
 const verifyToken = async (token: string) => {
-  console.log(
-    "-----------------",
-    process.env.JWT_SECRET,
-    token,
-    "-------------------"
-  );
   return await verify(token, process.env.JWT_SECRET as string);
 };
 
@@ -50,6 +44,7 @@ const verifyToken = async (token: string) => {
 export const register = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // console.log(req.body);
       if (req.body.password !== req.body.confirmPassword) {
         throw new APIError({
           message: "password is not match.",
@@ -62,15 +57,19 @@ export const register = catchAsync(
       });
       const id = newUser._id._id.toString();
       const token = await signToken(id);
-      res.cookie("jwt", token);
-      res.header("Access-Control-Allow-Origin", "*");
+      res.cookie("jwt", token, cookieOptions);
       res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
       );
-      res.status(200).json({
+      res.status(201).json({
         status: "success",
-        user: { ...newUser, id: undefined },
+        user: {
+          userName: newUser.userName,
+          role: newUser.role,
+          _id: undefined,
+          token: token,
+        },
         token,
       });
     } catch (err) {
@@ -104,11 +103,8 @@ export const login = catchAsync(
         throw new APIError({ message: "invalid credentials.", errorCode: 405 });
       }
       const id = exitingUser._id._id.toString();
-      const jwtEXP = Number(process.env.JWT_EXPIERS);
       const token = await signToken(id);
-      // console.log(req.cookies);
-      res.cookie("jwt", token, { httpOnly: false, sameSite: "none" });
-      res.header("Access-Control-Allow-Origin", "*");
+      res.cookie("jwt", token, { sameSite: "none" });
       res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
@@ -121,6 +117,7 @@ export const login = catchAsync(
           passwordChangedAt: undefined,
           password: undefined,
           token,
+          _id: undefined,
         },
       });
     } catch (err) {
@@ -166,9 +163,12 @@ export const restrict = (allowedRoles: string) =>
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // console.log(req.headers);
       const cookieTokenKey = req.headers?.cookie?.split("=")[0] as string;
       const token = req.headers?.cookie?.split("=")[1] as string;
-      console.log("////////////////", req.cookies);
+      // console.log(req.headers.cookie, req);
+      // console.log(req.cookies);
+      // const token = req.headers.jwt as string;
       const verifyResault = await verifyToken(token);
       //@ts-ignore
       const exitingUser = await User.findById(verifyResault.id);
@@ -179,7 +179,10 @@ export const protect = catchAsync(
         });
       }
       req.body.user = exitingUser;
-      if (cookieTokenKey === "jwt" && token) {
+      if (
+        // cookieTokenKey === "jwt" &&
+        token
+      ) {
         if (!verifyResault) {
           throw new APIError({
             message: "unauthorized session.",

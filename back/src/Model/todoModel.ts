@@ -5,7 +5,7 @@ import mongoose from "mongoose";
  * @class todoSchema
  * @type {mongoose.Schema}
  */
-const todoSchema = new mongoose.Schema({
+export const todoSchema = new mongoose.Schema({
   title: {
     type: String,
     require: [true, "title is required."],
@@ -23,7 +23,7 @@ const todoSchema = new mongoose.Schema({
     type: Boolean,
   },
   dueDate: {
-    type: [Number],
+    type: [Date],
   },
   user: {
     type: mongoose.Schema.ObjectId,
@@ -33,7 +33,7 @@ const todoSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.ObjectId,
     ref: "category",
-    default: "today",
+    require: [true, "category is not selected."],
   },
 });
 

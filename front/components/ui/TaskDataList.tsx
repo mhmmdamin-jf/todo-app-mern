@@ -39,10 +39,12 @@ function TaskDataList({ cells }: TaskDataListProps) {
       },
     },
   ];
+  console.log(cells);
   return (
+    // <></>
     <Col>
-      {cellstemp
-        ? cellstemp.map((cell) => {
+      {cells
+        ? cells.map((cell) => {
             const isOverDueDate = compareWithToday(cell.task.dueDate);
             return (
               <Box
@@ -108,11 +110,13 @@ function TaskDataList({ cells }: TaskDataListProps) {
                             sx={{
                               fontSize: 6,
                               color: isOverDueDate
-                                ? theme.palette.rose.main
+                                ? //@ts-ignore
+                                  theme.palette.rose.main
                                 : theme.palette.text.secondary,
                             }}
                           />
                           <Typography
+                            //@ts-ignore
                             sx={{ color: theme.palette.rose.main }}
                             component={"span"}
                           >

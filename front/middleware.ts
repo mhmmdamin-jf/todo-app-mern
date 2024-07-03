@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { allowedRoutes, defaultRedirectRoute } from "./routes";
+import { allowedRoutes, defaultRedirectRoute, defaultRoute } from "./routes";
 import { verifyToken } from "./action/jwtToken";
 
 export async function middleware(request: NextRequest) {
@@ -13,15 +13,15 @@ export async function middleware(request: NextRequest) {
   if (isAuthRoute && jwtCookie) {
     const verifyResault = await verifyToken(jwtCookie);
     if (verifyResault) {
-      return Response.redirect(new URL(defaultRedirectRoute, nextUrl));
+      return Response.redirect(new URL(defaultRedirectRoute, nextUrl.origin));
     }
   }
   if (!allowedRoutes.includes(request.nextUrl.pathname)) {
-    console.log(jwtCookie);
     if (!jwtCookie) {
-      return Response.redirect(new URL(defaultRedirectRoute, nextUrl));
+      return Response.redirect(new URL(defaultRoute, nextUrl.origin));
     }
   }
+  console.log(true);
   return;
 }
 

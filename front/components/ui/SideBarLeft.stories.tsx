@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-
+//@ts-ignore
 export const Default: Story = {
   render: (props) => (
     <SideBarLeft

@@ -9,12 +9,14 @@
     "title": "task2",
     "isImportant": false,
     "isCompleted": false,
+    "Category": "Importance",
     "dueDate": 1915837156465
   },
   {
     "title": "something",
     "isImportant": false,
     "isCompleted": false,
+    "Category": "Importance",
     "dueDate": 1715837156965
   },
   {
@@ -27,6 +29,7 @@
     "title": "t4",
     "isImportant": false,
     "isCompleted": false,
+    "Category": "tasks",
     "dueDate": 1715837199995
   }
 ]

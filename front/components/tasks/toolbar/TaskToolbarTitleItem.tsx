@@ -20,6 +20,7 @@ function TaskToolbarTitleItem() {
           "& .MuiButton-text": {
             color: theme.palette.text.secondary,
             fontSize: 12,
+            border: 3,
           },
         }}
       >

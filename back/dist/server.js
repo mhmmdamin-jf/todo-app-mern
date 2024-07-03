@@ -15,21 +15,12 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = require("./app");
-const dotenv_1 = __importDefault(require("dotenv"));
-const cors_1 = __importDefault(require("cors"));
 const devData_1 = require("./devData");
-dotenv_1.default.config({ path: "./src/config.env" });
 const connectionString = (_a = process.env.DATABASE_CONNECTION_STRING) === null || _a === void 0 ? void 0 : _a.replace(/<PASSWORD>/g, process.env.DATABASE_PASSWORD).replace(/,/g, "");
 process.on("uncaughtException", (e) => {
     console.log("uncaught rejection detected. shuting down...");
     process.exit(1);
 });
-app_1.app.use((0, cors_1.default)({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type, Authorization"],
-    credentials: true,
-}));
 mongoose_1.default
     .connect(connectionString)
     .then(() => __awaiter(void 0, void 0, void 0, function* () {

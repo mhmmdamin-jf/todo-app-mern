@@ -1,5 +1,5 @@
 services:
-  todo-front:
+  todo-app-front:
     environment:
       - NODE_ENV:development
       - PORT:3000

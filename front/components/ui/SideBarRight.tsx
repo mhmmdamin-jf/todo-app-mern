@@ -1,6 +1,8 @@
+"use client";
 import { CloseRounded, MenuRounded } from "@mui/icons-material";
 import {
   Box,
+  FormControl,
   FormControlLabel,
   IconButton,
   Stack,
@@ -18,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SideBar from "./SideBar";
 import { toggleShowSideBarRight } from "@/slices/sideBarSlice";
 import AntSwitch from "./AntSwitch";
+import { EnhancedStore } from "@reduxjs/toolkit";
 export type SideBarRightItem = {
   title: string;
   href: string;
@@ -28,49 +31,255 @@ export type iconButton = {
   icon: ReactNode;
 };
 function SideBarRight() {
-  const { showRight } = useSelector((store) => store.sideBarSlice);
+  const { showRight } = useSelector(
+    //@ts-ignore
+    (store: EnhancedStore) => store.sideBarSlice as any
+  );
   const dispatcher = useDispatch();
   const theme = useTheme();
   const sideBarBody = (
     <Box
       sx={{
-        "& .row .row .col": { boxShadow: 0, height: "20px" },
-        "& .row .row ": { display: "flex", justifyContent: "center", m: 2 },
+        "& .row .row .col": {
+          boxShadow: 0,
+          height: "20px",
+          width: "100%",
+          mx: -1.8,
+        },
+        "& .row .row .MuiFormControl-root": {
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 2,
+        },
+        "& .row .row ": {
+          display: "flex",
+          justifyContent: "center",
+          mx: 2,
+          my: 1,
+        },
+        height: "100%",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
       <Row>
         <Row>
           <Col>
-            <Typography sx={{ mt: 1 }} component={"h3"}>
+            <Typography sx={{ fontSize: 20 }} component={"h3"}>
               Settings
             </Typography>
           </Col>
           <Col>
             <IconButton
-              disableRipple
               onClick={() => dispatcher(toggleShowSideBarRight())}
-              sx={{ ml: 2 }}
+              sx={{ ml: 10, borderRadius: "100%", width: "30%", mt: -0.6 }}
             >
               <CloseRounded />
             </IconButton>
           </Col>
         </Row>
         <Row>
-          <FormControlLabel
-            control={<AntSwitch />}
-            sx={{
-              my: 2,
-              ml: -3,
-              alignItems: "start",
-              " .MuiFormControlLabel-label": {
-                ml: 1,
-                fontSize: 14,
-              },
-              width: "100%",
-            }}
-            labelPlacement="top"
-            label="Confirm before deleting"
-          />
+          <FormControl>
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Confirm before deleting"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Add new tasks on top"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Move starred tasks to top"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Play completion sound"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Show right-click menus"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Turn on reminder notifications"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Turn on night mode"
+            />
+          </FormControl>
+        </Row>
+        <Row>
+          <Col>
+            <Typography sx={{ fontSize: 20, ml: -2 }} component={"h3"}>
+              Smart lists
+            </Typography>
+          </Col>
+        </Row>
+        <Row>
+          <FormControl>
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Importance"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Completed"
+            />
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Auto-hide empty smart lists"
+            />
+          </FormControl>
+        </Row>
+        <Row>
+          <Col>
+            <Typography sx={{ fontSize: 20, ml: -2 }} component={"h3"}>
+              Notifications
+            </Typography>
+          </Col>
+        </Row>
+        <Row>
+          <FormControl>
+            <FormControlLabel
+              control={<AntSwitch />}
+              sx={{
+                my: 0,
+                ml: -3,
+                alignItems: "start",
+                " .MuiFormControlLabel-label": {
+                  ml: 1.4,
+                  fontSize: 14,
+                  mb: -1,
+                },
+                width: "100%",
+              }}
+              labelPlacement="top"
+              label="Email"
+            />
+          </FormControl>
         </Row>
       </Row>
       <Row>
@@ -88,10 +297,11 @@ function SideBarRight() {
   );
   return (
     <SideBar
-      show={showRight}
+      id="sideBar-r"
       width="300px"
       direction="ltr"
       sideBarBody={sideBarBody}
+      sx={{ boxShadow: 4 }}
     />
   );
 }

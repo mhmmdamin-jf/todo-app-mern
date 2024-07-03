@@ -1,5 +1,4 @@
 import { Switch, styled } from "@mui/material";
-import React from "react";
 
 export const AntSwitch = styled(Switch)(({ theme }) => ({
   overflow: "visible",
@@ -13,6 +12,9 @@ export const AntSwitch = styled(Switch)(({ theme }) => ({
     opacity: 0.8,
     backgroundColor: theme.palette.grey[200],
     borderColor: theme.palette.primary.dark,
+  },
+  "& .MuiTouchRipple-root": {
+    display: "none",
   },
   "& .MuiSwitch-thumb": {
     backgroundColor: theme.palette.grey[100],

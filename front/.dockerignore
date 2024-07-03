@@ -6,6 +6,6 @@ stories
 story-book-static
 .gitignore
 .eslintrc.json
-cypress.config.json
+cypress.config.ts
 jsdoc.json
 README.md

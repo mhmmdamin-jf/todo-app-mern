@@ -31,10 +31,11 @@ exports.addTodo = (0, factoryFn_1.addOne)(todoModel_1.todo);
  * sending response by resault and code
  */
 const getAllTodos = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     let todos = new todoParams_1.default({ query: req.query, queryString: todoModel_1.todo });
     todos = todos.filter().sort();
     const todoData = yield todoModel_1.todo
-        .find()
+        .find({ user: { $eq: { _id: (_b = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id } } })
         .populate({
         path: "user",
         select: "name",
@@ -54,6 +55,7 @@ exports.getAllTodos = getAllTodos;
  * sending response by resault and code
  */
 exports.getInDayTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
     const todos = yield todoModel_1.todo.aggregate([
         {
             $unwind: "$dueDate",
@@ -64,12 +66,14 @@ exports.getInDayTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __await
                     $lte: Date.now() + Number(process.env.START_DATE_TO_TASK),
                     $gte: Date.now(),
                 },
+                user: { $eq: { _id: (_d = (_c = req === null || req === void 0 ? void 0 : req.body) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d._id } },
             },
         },
     ]);
     if (!todos) {
         next(new APIError_1.default({ message: "cant find any todo.", errorCode: 404 }));
     }
+    console.log(todos);
     (0, factoryFn_1.sendSuccessData)(res, todos);
 }));
 /**
@@ -84,6 +88,7 @@ exports.deleteTodo = (0, factoryFn_1.deleteOne)(todoModel_1.todo);
  * sending response by resault and code
  */
 exports.getCustomDateTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e, _f;
     const startDate = new Date(req.query.startDate + process.env.START_DATE_TO_TASK);
     const endDate = new Date(req.query.endDate);
     const todos = yield todoModel_1.todo.aggregate([
@@ -94,6 +99,7 @@ exports.getCustomDateTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __
                     $lte: startDate,
                     $gte: endDate,
                 },
+                user: { $eq: { _id: (_f = (_e = req === null || req === void 0 ? void 0 : req.body) === null || _e === void 0 ? void 0 : _e.user) === null || _f === void 0 ? void 0 : _f._id } },
             },
         },
     ]);
@@ -107,12 +113,14 @@ exports.getCustomDateTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __
  * sending response by resault and code
  */
 exports.getCompletedTasks = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _g, _h;
     const todos = yield todoModel_1.todo.aggregate([
         {
             $match: {
                 isCompleted: {
                     $eq: true,
                 },
+                user: { $eq: { _id: (_h = (_g = req === null || req === void 0 ? void 0 : req.body) === null || _g === void 0 ? void 0 : _g.user) === null || _h === void 0 ? void 0 : _h._id } },
             },
         },
     ]);

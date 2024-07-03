@@ -12,7 +12,38 @@ const authRouter_1 = __importDefault(require("./router/authRouter"));
 const todoRouter_1 = __importDefault(require("./router/todoRouter"));
 const APIError_1 = __importDefault(require("./utils/APIError"));
 const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
 exports.app = express();
+dotenv.config({ path: "./src/config.env" });
+exports.app.use(cors({
+    origin: "http://localhost:3000", // Allow the correct origin
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Cookies",
+        "Cookie",
+        "cookie",
+    ],
+    credentials: true, // Include credentials if needed
+}));
+// app.options(
+//   "*",
+//   cors({
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     allowedHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "Cookies",
+//       "Cookie",
+//       "Cook",
+//     ],
+//     credentials: true,
+//     sameSite: "None",
+//   })
+// );
 // const limiter = erl({
 //   limit: 1000,
 //   windowMs: 3600 * 1000,

@@ -43,7 +43,6 @@ const cookieOptions = {
  * @returns {Function} signJWT
  */
 const verifyToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("-----------------", process.env.JWT_SECRET, token, "-------------------");
     return yield (0, jsonwebtoken_1.verify)(token, process.env.JWT_SECRET);
 });
 /**
@@ -56,6 +55,7 @@ const verifyToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
  */
 exports.register = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // console.log(req.body);
         if (req.body.password !== req.body.confirmPassword) {
             throw new APIError_1.default({
                 message: "password is not match.",
@@ -68,12 +68,16 @@ exports.register = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(vo
         });
         const id = newUser._id._id.toString();
         const token = yield (0, exports.signToken)(id);
-        res.cookie("jwt", token);
-        res.header("Access-Control-Allow-Origin", "*");
+        res.cookie("jwt", token, cookieOptions);
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.status(200).json({
+        res.status(201).json({
             status: "success",
-            user: Object.assign(Object.assign({}, newUser), { id: undefined }),
+            user: {
+                userName: newUser.userName,
+                role: newUser.role,
+                _id: undefined,
+                token: token,
+            },
             token,
         });
     }
@@ -102,15 +106,12 @@ exports.login = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 
             throw new APIError_1.default({ message: "invalid credentials.", errorCode: 405 });
         }
         const id = exitingUser._id._id.toString();
-        const jwtEXP = Number(process.env.JWT_EXPIERS);
         const token = yield (0, exports.signToken)(id);
-        // console.log(req.cookies);
-        res.cookie("jwt", token, { httpOnly: false, sameSite: "none" });
-        res.header("Access-Control-Allow-Origin", "*");
+        res.cookie("jwt", token, { sameSite: "none" });
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.status(200).json({
             status: "success",
-            user: Object.assign(Object.assign({}, exitingUser._doc), { passwordChangedAt: undefined, password: undefined, token }),
+            user: Object.assign(Object.assign({}, exitingUser._doc), { passwordChangedAt: undefined, password: undefined, token, _id: undefined }),
         });
     }
     catch (err) {
@@ -155,9 +156,12 @@ exports.restrict = restrict;
 exports.protect = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
     try {
+        // console.log(req.headers);
         const cookieTokenKey = (_b = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.cookie) === null || _b === void 0 ? void 0 : _b.split("=")[0];
         const token = (_d = (_c = req.headers) === null || _c === void 0 ? void 0 : _c.cookie) === null || _d === void 0 ? void 0 : _d.split("=")[1];
-        console.log("////////////////", req.cookies);
+        // console.log(req.headers.cookie, req);
+        // console.log(req.cookies);
+        // const token = req.headers.jwt as string;
         const verifyResault = yield verifyToken(token);
         //@ts-ignore
         const exitingUser = yield userModel_1.default.findById(verifyResault.id);
@@ -168,7 +172,9 @@ exports.protect = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(voi
             });
         }
         req.body.user = exitingUser;
-        if (cookieTokenKey === "jwt" && token) {
+        if (
+        // cookieTokenKey === "jwt" &&
+        token) {
             if (!verifyResault) {
                 throw new APIError_1.default({
                     message: "unauthorized session.",

@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
-import Component from "./index";
 import DateString from "./DateString";
-type Story = StoryObj<typeof Component>;
+type Story = StoryObj<typeof DateString>;
 
 export const Default: Story = {
   render: (props) => <DateString id="someId" />,

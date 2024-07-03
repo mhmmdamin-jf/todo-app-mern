@@ -27,10 +27,10 @@ export const userSchema = new mongoose.Schema({
       validator: function (el: string) {
         return isStrongPassword(el, {
           minLength: 6,
-          minLowercase: 2,
-          minNumbers: 2,
-          minSymbols: 1,
-          minUppercase: 1,
+          minLowercase: 0,
+          minNumbers: 0,
+          minSymbols: 0,
+          minUppercase: 0,
         });
       },
       message: "password is not strong",

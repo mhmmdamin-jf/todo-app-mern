@@ -5,9 +5,11 @@ import RegisterForm from "./RegisterForm";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { useTheme } from "@mui/material";
+import { EnhancedStore } from "@reduxjs/toolkit";
 
 export default function AuthForm() {
-  const formType = useSelector((store) => store.authSlice.formType);
+  //@ts-ignore
+  const formType = useSelector((store:EnhancedStore) => store.authSlice.formType as any);
   const theme = useTheme();
   return (
     <Box

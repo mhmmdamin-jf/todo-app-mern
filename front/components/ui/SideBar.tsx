@@ -1,14 +1,16 @@
+"use client";
 import { Box, SxProps, Theme, useTheme } from "@mui/material";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useRef } from "react";
 import { Col, Row } from "react-bootstrap";
+import { createPortal } from "react-dom";
 
 interface SideBarProps {
   width: string;
   direction?: string;
-  show: any;
   sideBarBody?: ReactNode;
   sideBarFooter?: ReactNode;
   sx?: SxProps<Theme> | undefined;
+  id?: string;
 }
 
 function SideBar({
@@ -16,36 +18,53 @@ function SideBar({
   sideBarBody,
   sideBarFooter,
   direction = "rtl",
-  show,
+  id,
   sx,
 }: SideBarProps) {
+  const SideBarRef = useRef<HTMLDivElement>();
   const theme = useTheme();
-  if (show) {
-    return (
-      <Box
-        sx={Object.assign(
-          {
-            direction: direction,
-            height: "100%",
-            width: width,
-            zIndex: theme.zIndex.drawer,
+  // document.addEventListener(
+  //   "click",
+  //   (e) => {
+  //     // e.preventDefault();
+  //     // e.stopPropagation();
+  //     // console.log(e);
+  //     // console.log(
+  //     //   SideBarRef.current && SideBarRef.current.contains(e.target as any)
+  //     // );
+  //   },
+  //   { capture: true }
+  // );
 
-            " .col": {
-              justifyContent: "space-between",
-              display: "flex",
-              flexDirection: "column",
-            },
+  // const portalContain = document.getElementById("portal-contain");
+  // if (portalContain) {
+  return (
+    <Box
+      ref={SideBarRef}
+      sx={Object.assign(
+        {
+          overflowY: "scroll",
+          direction: direction,
+          height: "100%",
+          width: width,
+          zIndex: theme.zIndex.drawer,
+          " .col": {
+            justifyContent: "space-between",
+            display: "flex",
+            flexDirection: "column",
           },
-          sx
-        )}
-      >
-        <Col>
-          <Row>{sideBarBody}</Row>
-          <Row>{sideBarFooter}</Row>
-        </Col>
-      </Box>
-    );
-  }
+        },
+        sx
+      )}
+    >
+      <Box sx={{ position: "fixed" }}></Box>
+      <Col id={id}>
+        <Row>{sideBarBody}</Row>
+        <Row>{sideBarFooter}</Row>
+      </Col>
+    </Box>
+  );
+  // }
 }
 
 export default SideBar;

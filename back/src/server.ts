@@ -3,7 +3,6 @@ import { app } from "./app";
 import dotenv from "dotenv";
 import cors from "cors";
 import { resetData } from "./devData";
-dotenv.config({ path: "./src/config.env" });
 const connectionString = process.env.DATABASE_CONNECTION_STRING?.replace(
   /<PASSWORD>/g,
   process.env.DATABASE_PASSWORD as string
@@ -12,15 +11,6 @@ process.on("uncaughtException", (e) => {
   console.log("uncaught rejection detected. shuting down...");
   process.exit(1);
 });
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type, Authorization"],
-    credentials: true,
-  })
-);
 
 mongoose
   .connect(connectionString as string)
