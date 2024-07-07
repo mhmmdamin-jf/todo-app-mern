@@ -1,12 +1,17 @@
 "use client";
 import { CircularProgress, Box } from "@mui/material";
 import React from "react";
+import { EnhancedStore } from "@reduxjs/toolkit";
 import TaskDataList from "@/components/ui/TaskDataList";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useTasks } from "@/hooks/useTasks";
+import TaskDataGrid from "../ui/TaskDataGrid";
+import { useSelector } from "react-redux";
 function Tasks() {
   const currentCategory = usePathname().split("/")[-1];
   const { data: tasks, isPending } = useTasks({ category: currentCategory });
+  //@ts-ignore
+  const { showTasks } = useSelector((store: EnhancedStore) => store.taskSlice);
   if (isPending)
     return (
       <Box
@@ -19,54 +24,11 @@ function Tasks() {
         <CircularProgress sx={{ mx: "auto" }} />
       </Box>
     );
-  return (
-    <TaskDataList
-      cells={tasks?.payload}
-      // cells={[
-      //   {
-      //     id: "q2",
-      //     task: {
-      //       category: "tasks",
-      //       completed: true,
-      //       dueDate: "06/05/2000",
-      //       importance: true,
-      //       title: "asdasdasd",
-      //     },
-      //   },
-      //   ,
-      //   {
-      //     id: "q1",
-      //     task: {
-      //       category: "tasks",
-      //       completed: false,
-      //       dueDate: "06/05/2300",
-      //       importance: false,
-      //       title: "asdasdasd",
-      //     },
-      //   },
-      //   {
-      //     id: "q",
-      //     task: {
-      //       category: "tasks",
-      //       completed: true,
-      //       dueDate: "06/05/2024",
-      //       importance: true,
-      //       title: "something ...",
-      //     },
-      //   },
-      //   {
-      //     id: "2",
-      //     task: {
-      //       category: "tasks",
-      //       completed: true,
-      //       dueDate: "06/05/2000",
-      //       importance: true,
-      //       title: "asdasdasd",
-      //     },
-      //   },
-      // ]}
-    />
-  );
+  if (tasks?.payload?.length) {
+    if (showTasks === "Grid") return <TaskDataGrid cells={tasks.payload} />;
+    else if (showTasks === "List")
+      return <TaskDataList cells={tasks.payload} />;
+  }
 }
 
 export default Tasks;

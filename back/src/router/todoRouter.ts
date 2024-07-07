@@ -61,7 +61,7 @@ todoRouter.route("/completedTasks").get(getCompletedTasks);
 todoRouter.route("/customDateTodos").get(getCustomDateTodos);
 
 /**
- * function for getting all todos or post a todo
+ * function for add todos or post a todo
  * @name /todo/
  * @function
  * @memberof todoRouter

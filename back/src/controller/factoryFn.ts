@@ -52,7 +52,6 @@ export const deleteOne = (model: typeof Model) =>
 export const addOne = (model: typeof Model) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(model, req.body);
       const doc = await model.create(req.body);
       sendSuccessData(res, doc, 201);
     } catch (err) {

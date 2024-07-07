@@ -1,5 +1,9 @@
 "use client";
-import { compareWithToday, todayFormatDate } from "@/utils/date";
+import {
+  compareWithToday,
+  customDueDateFormat,
+  todayFormatDate,
+} from "@/utils/date";
 import {
   Circle,
   CircleOutlined,
@@ -27,25 +31,12 @@ interface TaskDataListProps {
 }
 function TaskDataList({ cells }: TaskDataListProps) {
   const theme = useTheme();
-  const cellstemp = [
-    {
-      id: "1",
-      task: {
-        title: "task1",
-        dueDate: "2024/01/20",
-        completed: true,
-        importance: true,
-        category: "today",
-      },
-    },
-  ];
-  console.log(cells);
   return (
-    // <></>
     <Col>
       {cells
-        ? cells.map((cell) => {
-            const isOverDueDate = compareWithToday(cell.task.dueDate);
+        ? cells?.map((cell) => {
+            const isOverDueDate =
+              cell.dueDate && compareWithToday(cell.dueDate[0]);
             return (
               <Box
                 key={cell.id}
@@ -70,7 +61,7 @@ function TaskDataList({ cells }: TaskDataListProps) {
                         },
                       }}
                     >
-                      {cell.task.completed === true ? (
+                      {cell.isCompleted === true ? (
                         <TaskAltOutlined />
                       ) : (
                         <CircleOutlined />
@@ -87,7 +78,7 @@ function TaskDataList({ cells }: TaskDataListProps) {
                           }}
                           component={"p"}
                         >
-                          {cell.task.title}
+                          {cell.title}
                         </Typography>
                       </Row>
                       <Row>
@@ -104,7 +95,7 @@ function TaskDataList({ cells }: TaskDataListProps) {
                           component={"div"}
                         >
                           <Typography component={"span"}>
-                            {cell.task.category}
+                            {cell.category}
                           </Typography>
                           <Circle
                             sx={{
@@ -115,14 +106,16 @@ function TaskDataList({ cells }: TaskDataListProps) {
                                 : theme.palette.text.secondary,
                             }}
                           />
-                          <Typography
-                            //@ts-ignore
-                            sx={{ color: theme.palette.rose.main }}
-                            component={"span"}
-                          >
-                            {isOverDueDate && "overDueDate"}
-                            {todayFormatDate()}
-                          </Typography>
+                          {cell.dueDate && (
+                            <Typography
+                              //@ts-ignore
+                              sx={{ color: theme.palette.rose.main }}
+                              component={"span"}
+                            >
+                              {isOverDueDate && "overDueDate"}
+                              {customDueDateFormat(new Date(cell?.dueDate[0]))}
+                            </Typography>
+                          )}
                         </Typography>
                       </Row>
                     </Box>
@@ -133,7 +126,7 @@ function TaskDataList({ cells }: TaskDataListProps) {
                         color: theme.palette.primary.main,
                       }}
                     >
-                      {cell.task.importance ? (
+                      {cell.isImportant ? (
                         <StarRounded />
                       ) : (
                         <StarOutlineRounded />

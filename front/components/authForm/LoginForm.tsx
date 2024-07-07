@@ -91,10 +91,12 @@ export default function LoginForm() {
     }
   };
   const handleNextField = () => {
+    form.setValue("password", "");
     if (form.getValues("userName").length === 0) {
       form.setError("userName", { message: "user name is required." });
       return;
     }
+
     if (lableNumber !== 2) {
       setLableNumber(() => 2);
     }
@@ -154,7 +156,7 @@ export default function LoginForm() {
           control={
             <TextField
               aria-description="password"
-              {...form.register("userName")}
+              {...form.register("password")}
               name="password"
               type="password"
               onChange={(e) => form.setValue("password", e.target.value)}

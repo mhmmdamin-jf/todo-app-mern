@@ -25,9 +25,7 @@ export default function RootLayout({
               <html lang="en">
                 <body>
                   <ReactQueryDevtools initialIsOpen={false} />
-                  <AppRouterCacheProvider>
-                    <div id="parent-contain">{children}</div>
-                  </AppRouterCacheProvider>
+                  <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
                 </body>
               </html>
             </ThemeContext.Provider>

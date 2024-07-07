@@ -18,4 +18,5 @@ export const registerSchema = zod
 export const taskSchema = zod.object({
   title: zod.string().min(1, "task should have title"),
   dueDate: zod.string().default(Date.now().toString()),
+  category: zod.string().min(1, "category is required."),
 });

@@ -21,26 +21,9 @@ function SideBar({
   id,
   sx,
 }: SideBarProps) {
-  const SideBarRef = useRef<HTMLDivElement>();
   const theme = useTheme();
-  // document.addEventListener(
-  //   "click",
-  //   (e) => {
-  //     // e.preventDefault();
-  //     // e.stopPropagation();
-  //     // console.log(e);
-  //     // console.log(
-  //     //   SideBarRef.current && SideBarRef.current.contains(e.target as any)
-  //     // );
-  //   },
-  //   { capture: true }
-  // );
-
-  // const portalContain = document.getElementById("portal-contain");
-  // if (portalContain) {
   return (
     <Box
-      ref={SideBarRef}
       sx={Object.assign(
         {
           overflowY: "scroll",

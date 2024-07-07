@@ -40,7 +40,6 @@ import { useTheme } from "@/contexts/theme";
 import SideBarFeedBack from "@/components/ui/SideBarFeedBack";
 export default function Layout({ children }: { children: ReactNode }) {
   const dispatcher = useDispatch<any>();
-
   useEffect(function () {
     dispatcher(getLeftSideBarItems());
   }, []);
@@ -50,108 +49,103 @@ export default function Layout({ children }: { children: ReactNode }) {
   );
   const { theme, toggleTheme, appTheme } = useTheme();
   return (
-    <div id="portal-contain">
-      <Box
-        bgcolor={theme.palette.background.default}
-        sx={{
-          overflow: "hidden",
-          overflowBlock: "scroll",
+    <Box
+      bgcolor={theme.palette.background.default}
+      sx={{
+        overflow: "hidden",
+        overflowBlock: "scroll",
+        height: "100%",
+        "& .col": {
           height: "100%",
-          "& .col": {
+        },
+      }}
+    >
+      <Col>
+        <Row>
+          <MainNav />
+        </Row>
+        <Row>
+          <button
+            style={{ opacity: 0 }}
+            id="toggleThemeBTN"
+            onClick={() => toggleTheme()}
+          >
+            {appTheme}
+          </button>
+        </Row>
+        <Box
+          sx={{
             height: "100%",
-          },
-        }}
-      >
-        <Col>
-          <Row>
-            <MainNav />
-          </Row>
-          <Row>
-            <button
-              style={{
-                color:
-                  theme.palette.mode === "dark"
-                    ? theme.palette.common.black
-                    : theme.palette.common.white,
-              }}
-              onClick={() => toggleTheme()}
-            >
-              {appTheme}
-            </button>
-          </Row>
-          <Box
-            sx={{
+            display: "flex",
+            "& > div": {
               height: "100%",
-              "& > div": {
-                // display: "flex",
-                // flexDirection: "column",
-                height: "100%",
-              },
+            },
+          }}
+        >
+          <Collapse
+            in={showLeft}
+            orientation="horizontal"
+            sx={{ px: 0, pl: 1.5 }}
+          >
+            <Col id="sideBar">
+              <SideBarLeft
+                //@ts-ignore
+                iconButtons={[
+                  { href: "/", icon: <EmailOutlined /> } as iconButton,
+                  {
+                    href: "/",
+                    icon: <CalendarMonthRounded />,
+                  } as iconButton,
+                  { href: "/", icon: <PeopleAltOutlined /> } as iconButton,
+                  { href: "/", icon: <AttachFileOutlined /> } as iconButton,
+                  {
+                    href: "/",
+                    icon: <DoneOutline />,
+                    sx: { color: theme.palette.primary.main },
+                  } as iconButton,
+                ]}
+                items={items}
+              />
+            </Col>
+          </Collapse>
+          <Col>
+            <Box
+              sx={{
+                width: "100%",
+                "& .MuiBox-root": {
+                  bgcolor: theme.palette.background.default,
+                  mt: 0.8,
+                },
+              }}
+            >
+              <TaskToolbar />
+              {children}
+            </Box>
+          </Col>
+          <Collapse
+            in={showFeedback}
+            orientation="vertical"
+            sx={{
+              width: showFeedback ? "fit-content" : 0,
+              " #sidebarFeedback": { height: "100%" },
+              height: "100%",
             }}
           >
-            <Box>
-              <Collapse
-                in={showLeft}
-                orientation="horizontal"
-                sx={{ px: 0, pl: 1.5 }}
-                id="sideBar-l"
-              >
-                <Col id="sideBar">
-                  <SideBarLeft
-                    //@ts-ignore
-                    iconButtons={[
-                      { href: "/", icon: <EmailOutlined /> } as iconButton,
-                      {
-                        href: "/",
-                        icon: <CalendarMonthRounded />,
-                      } as iconButton,
-                      { href: "/", icon: <PeopleAltOutlined /> } as iconButton,
-                      { href: "/", icon: <AttachFileOutlined /> } as iconButton,
-                      {
-                        href: "/",
-                        icon: <DoneOutline />,
-                        sx: { color: theme.palette.primary.main },
-                      } as iconButton,
-                    ]}
-                    items={items}
-                  />
-                </Col>
-              </Collapse>
-              <Col>
-                <Box
-                  sx={{
-                    "& .MuiBox-root": {
-                      bgcolor: theme.palette.background.default,
-                      mt: 0.8,
-                    },
-                  }}
-                >
-                  <TaskToolbar />
-                  {children}
-                </Box>
-              </Col>
-              <Collapse
-                in={showFeedback}
-                orientation="vertical"
-                sx={{ " #sidebarRight": { height: "100%" }, height: "100%" }}
-              >
-                <Col id="sidebarRight" xs={{ span: "12" }}>
-                  <SideBarFeedBack />
-                </Col>
-              </Collapse>
-              <Collapse
-                in={showRight}
-                orientation="horizontal"
-                sx={{ " #sidebarFeedBack": { height: "100%" }, height: "100%" }}
-              >
-                <Col id="sidebarFeed" xs={{ span: "12" }}>
-                  <SideBarRight />
-                </Col>
-              </Collapse>
-            </Box>
-          </Box>
-        </Col>
-      </Box>
-    </div>
+            <Col id="sidebarRight" xs={{ span: "12" }}>
+              <SideBarFeedBack />
+            </Col>
+          </Collapse>
+          <Collapse
+            in={showRight}
+            orientation="horizontal"
+            sx={{ height: "100%" }}
+          >
+            <Col id="sidebar-r" xs={{ span: "12" }}>
+              <SideBarRight />
+            </Col>
+          </Collapse>
+        </Box>
+      </Col>
+    </Box>
   );
 }

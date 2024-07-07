@@ -11,6 +11,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { useTheme as useAppTheme } from "@/contexts/theme";
 import { DatePicker } from "@mui/lab";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,8 +36,12 @@ function SideBarRight() {
     //@ts-ignore
     (store: EnhancedStore) => store.sideBarSlice as any
   );
+  const themeBTN = document.getElementById("toggleThemeBTN");
+  console.log(themeBTN);
   const dispatcher = useDispatch();
   const theme = useTheme();
+  const { toggleTheme, appTheme } = useAppTheme();
+  console.log(appTheme);
   const sideBarBody = (
     <Box
       sx={{
@@ -178,6 +183,9 @@ function SideBarRight() {
               label="Turn on reminder notifications"
             />
             <FormControlLabel
+              onClick={() => {
+                themeBTN?.click();
+              }}
               control={<AntSwitch />}
               sx={{
                 my: 0,

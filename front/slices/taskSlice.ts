@@ -1,16 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useCookies } from "react-cookie";
 interface TaskDataProps {
   tasks: any;
   error: null | Error;
+  showTasks: "Grid" | "List";
 }
-const initalTaskData: TaskDataProps = { tasks: [], error: null };
+const initalTaskData: TaskDataProps = {
+  tasks: [],
+  error: null,
+  showTasks: "Grid",
+};
 
 const taskSlice = createSlice({
   name: "taskSlice",
   initialState: initalTaskData,
-  reducers: {},
+  reducers: {
+    setShowTaskGrid(state) {
+      state.showTasks = "Grid";
+    },
+    setShowTaskList(state) {
+      state.showTasks = "List";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addTask.pending, (state) => {
@@ -21,6 +32,27 @@ const taskSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.error = null;
+      })
+      .addCase(getTasks.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(getTasks.rejected, (state) => {
+        state.error = new Error("cannot get tasks.");
+      })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        state.error = null;
+        state.tasks = action.payload;
+      })
+      .addCase(searchTasks.pending, (state) => {
+        state.tasks = null;
+        state.error = null;
+      })
+      .addCase(searchTasks.rejected, (state) => {
+        state.error = new Error("cannot find tasks.");
+        state.tasks = null;
+      })
+      .addCase(searchTasks.fulfilled, (state, action) => {
+        state.tasks = action.payload;
       });
   },
 });
@@ -34,16 +66,7 @@ export const addTask = createAsyncThunk(
       values,
       {
         withCredentials: true,
-        // headers: {
-        //   Cookie: `jwt=${jwt}`,
-        // },
       }
-    );
-    console.log(
-      12121212121212,
-      postResautl.headers,
-      postResautl.config,
-      postResautl.request
     );
     return postResautl.data;
   }
@@ -52,14 +75,23 @@ export const addTask = createAsyncThunk(
 export const getTasks = createAsyncThunk(
   "fetchToday/taskSlice",
   async ({ category = "today" }: { category: string }) => {
-    const todayTasks = await axios.get(
-      `http://127.0.0.1:3002/api/todo/${category}`,
-      {
-        withCredentials: true,
-      }
-    );
+    const todayTasks = await axios.get(`http://127.0.0.1:3002/api/todo`, {
+      withCredentials: true,
+    });
     return todayTasks?.data?.data;
   }
 );
 
+export const searchTasks = createAsyncThunk(
+  "searchTasks/taskSlice",
+  async ({ title }: { title: string }) => {
+    const exitingTasks = await axios.get(
+      `http://127.0.0.1:3002/api/todo?title=${title}`,
+      { withCredentials: true }
+    );
+    return exitingTasks?.data?.data;
+  }
+);
+
 export default taskSlice.reducer;
+export const { setShowTaskGrid, setShowTaskList } = taskSlice.actions;

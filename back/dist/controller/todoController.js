@@ -18,11 +18,18 @@ const todoModel_1 = require("../Model/todoModel");
 const todoParams_1 = __importDefault(require("../utils/todoParams"));
 const APIError_1 = __importDefault(require("../utils/APIError"));
 const factoryFn_1 = require("../controller/factoryFn");
+const categoryModel_1 = require("../Model/categoryModel");
 /**
  * async functino for adding new todo
  * @param {todo} todoFile
  */
-exports.addTodo = (0, factoryFn_1.addOne)(todoModel_1.todo);
+exports.addTodo = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    req.body.category = yield categoryModel_1.categoryModel.findOne({
+        title: req.body.category,
+    });
+    console.log(req.body);
+    (0, factoryFn_1.addOne)(todoModel_1.todo);
+}));
 /**
  * async function for getting all todos by some filter and params in pathname
  * @param {Request} req
@@ -32,9 +39,7 @@ exports.addTodo = (0, factoryFn_1.addOne)(todoModel_1.todo);
  */
 const getAllTodos = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    let todos = new todoParams_1.default({ query: req.query, queryString: todoModel_1.todo });
-    todos = todos.filter().sort();
-    const todoData = yield todoModel_1.todo
+    const todoData = todoModel_1.todo
         .find({ user: { $eq: { _id: (_b = (_a = req === null || req === void 0 ? void 0 : req.body) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id } } })
         .populate({
         path: "user",
@@ -44,7 +49,10 @@ const getAllTodos = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         path: "category",
         select: "name",
     });
-    (0, factoryFn_1.sendSuccessData)(res, todoData);
+    let todos = new todoParams_1.default({ query: req.query, queryString: todoData });
+    todos = todos.filter();
+    const query = yield todos.queryString;
+    (0, factoryFn_1.sendSuccessData)(res, query);
 });
 exports.getAllTodos = getAllTodos;
 /**
@@ -73,7 +81,6 @@ exports.getInDayTodos = (0, catchAsync_1.catchAsync)((req, res, next) => __await
     if (!todos) {
         next(new APIError_1.default({ message: "cant find any todo.", errorCode: 404 }));
     }
-    console.log(todos);
     (0, factoryFn_1.sendSuccessData)(res, todos);
 }));
 /**

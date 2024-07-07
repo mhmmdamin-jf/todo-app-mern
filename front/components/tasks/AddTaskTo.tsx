@@ -28,18 +28,23 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
 import * as zod from "zod";
+import { usePathname } from "next/navigation";
 
 function AddTaskTo() {
   const theme = useTheme();
   const dispatcher = useDispatch<any>();
   const form = useForm<zod.infer<typeof taskSchema>>({
-    defaultValues: { dueDate: "", title: "" },
+    defaultValues: { dueDate: "", title: "", category: "" },
     resolver: zodResolver(taskSchema),
   });
+  const current = usePathname();
   useKey({
     key: "enter",
     action: async () => {
-      await dispatcher(addTask({ values: form.getValues() }));
+      form.setValue("category", current.split("/")[2]);
+      const values = taskSchema.safeParse(form.getValues());
+
+      await dispatcher(addTask({ values: values.data }));
     },
     usingCtrl: false,
   });
@@ -76,14 +81,9 @@ function AddTaskTo() {
           <IconButton disableRipple>
             <CircleOutlined />
           </IconButton>
-          {/* <Input
-            id="task-title-input"
-            disableUnderline
-            onChange={(e) => form.setValue("title", e.target.value)}
-            placeholder="Add a task"
-          /> */}
           <FormControlLabel
             label=""
+            sx={{ width: "100%" }}
             control={
               <Input
                 name="title"
@@ -91,6 +91,7 @@ function AddTaskTo() {
                 disableUnderline
                 onChange={(e) => form.setValue("title", e.target.value)}
                 placeholder="Add a task"
+                sx={{ width: "95%" }}
               />
             }
           />
@@ -102,7 +103,16 @@ function AddTaskTo() {
             justifyContent: "start",
           }}
         >
-          <IconButton disableRipple>
+          <IconButton
+            sx={{
+              p: 0,
+              m: 0,
+              " .MuiFormControlLabel-labelPlacementEnd": {
+                m: 0,
+              },
+            }}
+            disableRipple
+          >
             <FormControlLabel
               label=""
               control={

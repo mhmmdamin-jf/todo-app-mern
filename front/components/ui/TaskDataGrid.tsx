@@ -15,14 +15,25 @@ import {
   TableRow,
   useTheme,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { EnhancedStore } from "@reduxjs/toolkit";
 import React from "react";
 import { taskType } from "./TaskDataList";
+import {
+  compareWithToday,
+  customDateFormat,
+  customDueDateFormat,
+} from "@/utils/date";
 interface TasksDataGridProps {
   size?: "small" | "medium";
   cells: [taskType];
 }
 function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
   const theme = useTheme();
+  //@ts-ignore
+  const { tasks } = useSelector(
+    (store: EnhancedStore) => store.taskSlice as any
+  );
   return (
     <Box>
       <Table
@@ -48,30 +59,48 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {cells.map((cell) => (
-            <TableRow key={cell.id}>
-              <TableCell>
-                <IconButton>
-                  {cell.task.completed === true ? (
-                    <TaskAltOutlined />
-                  ) : (
-                    <CircleOutlined />
-                  )}
-                </IconButton>
-              </TableCell>
-              <TableCell>{cell.task.title}</TableCell>
-              <TableCell>{cell.task.dueDate}</TableCell>
-              <TableCell>
-                <IconButton>
-                  {cell.task.importance ? (
-                    <StarRounded />
-                  ) : (
-                    <StarOutlineRounded />
-                  )}
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {tasks &&
+            tasks.map((cell) => {
+              const isOverDueDate =
+                cell.dueDate && compareWithToday(cell.dueDate[0]);
+
+              return (
+                <TableRow key={cell.id}>
+                  <TableCell>
+                    <IconButton>
+                      {cell.isCompleted === true ? (
+                        <TaskAltOutlined />
+                      ) : (
+                        <CircleOutlined />
+                      )}
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>{cell.title}</TableCell>
+                  <TableCell
+                    sx={{
+                      fontSize: 16,
+                      color: isOverDueDate
+                        ? //@ts-ignore
+                          theme.palette.rose.main
+                        : theme.palette.text.secondary,
+                    }}
+                  >
+                    {isOverDueDate && "overDueDate"}
+                    {cell?.dueDate &&
+                      customDueDateFormat(new Date(cell?.dueDate[0]))}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton>
+                      {cell.isImportant ? (
+                        <StarRounded />
+                      ) : (
+                        <StarOutlineRounded />
+                      )}
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </Box>

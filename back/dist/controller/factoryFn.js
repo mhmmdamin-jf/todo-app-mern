@@ -58,7 +58,6 @@ exports.deleteOne = deleteOne;
  */
 const addOne = (model) => (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(model, req.body);
         const doc = yield model.create(req.body);
         (0, exports.sendSuccessData)(res, doc, 201);
     }

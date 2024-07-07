@@ -16,12 +16,12 @@ class Todo {
         return this;
     }
     filterQuery() {
-        const filteredQuery = this.excludeFields.map((param) => (this.query[param] = undefined));
-        return filteredQuery;
+        this.excludeFields.filter((param) => !this.excludeFields.includes(this.query[param]));
+        return this.query;
     }
     filter() {
         const filteredQuery = this.filterQuery();
-        this.queryString = this.queryString + this.queryString.find(filteredQuery);
+        this.queryString = this.queryString.find(filteredQuery);
         return this;
     }
 }

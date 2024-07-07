@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, query, Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { todo } from "../Model/todoModel";
 import Todo from "../utils/todoParams";
@@ -10,12 +10,21 @@ import {
   sendSuccessData,
   updateOne,
 } from "../controller/factoryFn";
+import { categoryModel } from "../Model/categoryModel";
 
 /**
  * async functino for adding new todo
  * @param {todo} todoFile
  */
-export const addTodo = addOne(todo);
+export const addTodo = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    req.body.category = await categoryModel.findOne({
+      title: req.body.category,
+    });
+    console.log(req.body);
+    addOne(todo);
+  }
+);
 
 /**
  * async function for getting all todos by some filter and params in pathname
@@ -29,9 +38,7 @@ export const getAllTodos = async (
   res: Response,
   next: NextFunction
 ) => {
-  let todos = new Todo({ query: req.query, queryString: todo });
-  todos = todos.filter().sort();
-  const todoData = await todo
+  const todoData = todo
     .find({ user: { $eq: { _id: req?.body?.user?._id } } })
     .populate({
       path: "user",
@@ -41,7 +48,10 @@ export const getAllTodos = async (
       path: "category",
       select: "name",
     });
-  sendSuccessData(res, todoData);
+  let todos = new Todo({ query: req.query, queryString: todoData });
+  todos = todos.filter();
+  const query = await todos.queryString;
+  sendSuccessData(res, query);
 };
 
 /**
@@ -70,7 +80,6 @@ export const getInDayTodos = catchAsync(
     if (!todos) {
       next(new APIError({ message: "cant find any todo.", errorCode: 404 }));
     }
-    console.log(todos);
     sendSuccessData(res, todos);
   }
 );

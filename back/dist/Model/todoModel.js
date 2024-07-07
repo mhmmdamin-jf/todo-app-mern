@@ -44,7 +44,7 @@ exports.todoSchema = new mongoose_1.default.Schema({
  * pre find middleware for adding some queries to current find query
  * @property {queryMiddlewar}
  */
-// todoSchema.pre(/^find/, function (next: NextFunction) {
+// todoSchema.pre(/^find/, async function (next: NextFunction) {
 //   this.populate({
 //     path: "user",
 //     select: "name",

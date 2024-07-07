@@ -1,9 +1,12 @@
 "use client";
+import { useFindTasks } from "@/hooks/useFindTasks";
 import { toggleShowSideBarFeedBack } from "@/slices/sideBarSlice";
 import { toggleShowSideBarRight } from "@/slices/sideBarSlice";
+import { getTasks, searchTasks } from "@/slices/taskSlice";
 import {
   AppsRounded,
   Campaign,
+  CircleOutlined,
   PersonOutline,
   QuestionMark,
   SearchRounded,
@@ -17,14 +20,35 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
+import { useTheme as useAppTheme } from "@/contexts/theme";
 
 export default function MainNav() {
+  const [searchValue, setSearchValue] = useState<string | undefined>("");
   const dispatcher = useDispatch();
   const theme = useTheme();
+  const { setColorTheme } = useAppTheme();
   const isSmUpView = useMediaQuery(theme.breakpoints.up("sm"));
   const isMdUpView = useMediaQuery(theme.breakpoints.up("md"));
+  const currentCategory = usePathname().split("/")[2];
+  useEffect(
+    function () {
+      const allTodos = async () => {
+        await dispatcher(getTasks({ category: currentCategory }));
+      };
+      const exitingTodos = async () => {
+        await dispatcher(searchTasks({ title: searchValue }));
+      };
+      if (!searchValue) {
+        allTodos();
+      }
+      exitingTodos();
+    },
+    [searchValue, dispatcher]
+  );
   return (
     <Box
       sx={{
@@ -57,7 +81,6 @@ export default function MainNav() {
               color: theme.palette.common.white,
               fontSize: 16,
               marginInlineStart: isSmUpView ? 1.5 : isMdUpView ? 0 : 2.5,
-              bgcolor: "red",
             }}
           >
             To Do
@@ -83,10 +106,12 @@ export default function MainNav() {
                 bgcolor: "transparent",
                 border: 0,
                 outline: 0,
-                width: "100%",
+                width: "92%",
                 ml: 3,
                 zIndex: theme.zIndex.fab,
               }}
+              onChange={(e) => setSearchValue(e.target.value)}
+              value={searchValue}
               component={"input"}
             />
             <SearchRounded
@@ -125,8 +150,8 @@ export default function MainNav() {
                     </Button>
                   </Col>
                   <Col sm={{ span: "1" }}>
-                    <Button>
-                      <Campaign />
+                    <Button onClick={() => setColorTheme(() => "greenStone")}>
+                      <CircleOutlined />
                     </Button>
                   </Col>
                 </>

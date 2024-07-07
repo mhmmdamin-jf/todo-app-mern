@@ -7,20 +7,112 @@ const fontName = Roboto({
   weight: ["500", "700", "300"],
   subsets: ["latin"],
 });
-
-export const tokens = (mode: string) =>
-  mode === "dark"
+interface colorsThemeProps {
+  greenStone: {};
+  blcakBerry: {};
+  body: {};
+  primary: {};
+  greenStoneDark: {};
+  blcakBerryDark: {};
+  bodyDark: {};
+  primaryDark: {};
+}
+const colorsTheme: colorsThemeProps = {
+  greenStone: {
+    100: "#dafceb",
+    200: "#b4f8d6",
+    300: "#8ff5c2",
+    400: "#69f1ad",
+    500: "#44ee99",
+    600: "#36be7a",
+    700: "#298f5c",
+    800: "#1b5f3d",
+    900: "#0e301f",
+  },
+  blcakBerry: {
+    100: "#fcd3e0",
+    200: "#f8a7c2",
+    300: "#f57aa3",
+    400: "#f14e85",
+    500: "#ee2266",
+    600: "#be1b52",
+    700: "#8f143d",
+    800: "#5f0e29",
+    900: "#300714",
+  },
+  body: {
+    100: "#fcfcfc",
+    200: "#f8f8f8",
+    300: "#f5f5f5",
+    400: "#f1f1f1",
+    500: "#bebebe",
+    600: "#bfbfbf",
+    700: "#8f8f8f",
+    800: "#5f5f5f",
+    900: "#303030",
+  },
+  primary: {
+    100: "#d3e0f5",
+    200: "#a8c1ec",
+    300: "#7ca2e2",
+    400: "#5183d9",
+    500: "#2564cf",
+    600: "#1e50a6",
+    700: "#163c7c",
+    800: "#0f2853",
+    900: "#071429",
+  },
+  greenStoneDark: {
+    900: "#dafceb",
+    800: "#b4f8d6",
+    700: "#8ff5c2",
+    600: "#69f1ad",
+    500: "#44ee99",
+    400: "#36be7a",
+    300: "#298f5c",
+    200: "#1b5f3d",
+    100: "#0e301f",
+  },
+  blcakBerryDark: {
+    900: "#fcd3e0",
+    800: "#f8a7c2",
+    700: "#f57aa3",
+    600: "#f14e85",
+    500: "#ee2266",
+    400: "#be1b52",
+    300: "#8f143d",
+    200: "#5f0e29",
+    100: "#300714",
+  },
+  bodyDark: {
+    900: "#fcfcfc",
+    800: "#f8f8f8",
+    700: "#f5f5f5",
+    600: "#f1f1f1",
+    500: "#cccccc",
+    400: "#bfbfbf",
+    300: "#8f8f8f",
+    200: "#5f5f5f",
+    100: "#303030",
+  },
+  primaryDark: {
+    900: "#d3e0f5",
+    800: "#a8c1ec",
+    700: "#7ca2e2",
+    600: "#5183d9",
+    500: "#2564cf",
+    400: "#1e50a6",
+    300: "#163c7c",
+    200: "#0f2853",
+    100: "#071429",
+  },
+};
+export const tokens = (mode: string, colorThemeName: colorsThemeProps) => {
+  const str = `${colorThemeName}Dark`;
+  return mode === "dark"
     ? {
         primary: {
-          100: "#d3e0f5",
-          200: "#a8c1ec",
-          300: "#7ca2e2",
-          400: "#5183d9",
-          500: "#2564cf",
-          600: "#1e50a6",
-          700: "#163c7c",
-          800: "#0f2853",
-          900: "#071429",
+          ...colorsTheme[colorThemeName],
         },
         gray: {
           100: "#e9e9e9",
@@ -36,15 +128,8 @@ export const tokens = (mode: string) =>
       }
     : {
         primary: {
-          900: "#d3e0f5",
-          800: "#a8c1ec",
-          700: "#7ca2e2",
-          600: "#5183d9",
-          500: "#2564cf",
-          400: "#1e50a6",
-          300: "#163c7c",
-          200: "#0f2853",
-          100: "#071429",
+          //@ts-ignore
+          ...colorsTheme[`${colorThemeName}Dark`],
         },
         gray: {
           100: "#070707",
@@ -58,9 +143,10 @@ export const tokens = (mode: string) =>
           900: "#e9e9e9",
         },
       };
+};
 
-export const themeSettings = (mode: string) => {
-  const colors = tokens(mode);
+export const themeSettings = (mode: string, colorThemeName: string) => {
+  const colors = tokens(mode, colorThemeName);
   return {
     palette: {
       rose: {
@@ -68,9 +154,10 @@ export const themeSettings = (mode: string) => {
       },
       ...(mode === "dark"
         ? {
-            // priamry: {
-            //   main: colors.primary[500],
-            // },
+            text: { primary: "#fff", secondary: "#fff" },
+            priamry: {
+              main: colors.primary[500],
+            },
             // gray: {
             //   main: colors.gray[500],
             // },
@@ -81,6 +168,9 @@ export const themeSettings = (mode: string) => {
             background: { paper: "#e2e4d2", default: "#222" },
           }
         : {
+            priamry: {
+              main: colors.primary[500],
+            },
             ...colors,
             // background: {
             //   default: "#11100f",
@@ -116,15 +206,19 @@ export const ThemeContext = createContext<themeContextType>(
 export function useTheme() {
   const { mode } = useContext(ThemeContext);
   const [appTheme, setAppTheme] = useState<"dark" | "light">("light");
+  const [colorTheme, setColorTheme] = useState<
+    "primary" | "body" | "blackBerry" | "greenStone"
+  >("primary");
   const toggleTheme = () => {
     setAppTheme(appTheme === "dark" ? "light" : "dark");
   };
-  console.log(appTheme);
-  const settings = themeSettings(appTheme);
+  const settings = themeSettings(appTheme, colorTheme);
   const theme = createTheme(settings);
   const values = {
     appTheme,
     toggleTheme,
+    setColorTheme,
+    colorTheme,
   };
   return { theme, ...values };
   // (

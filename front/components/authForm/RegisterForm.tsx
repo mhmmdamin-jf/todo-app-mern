@@ -82,7 +82,9 @@ export default function RegisterForm() {
     }
   };
   const handleNextField = () => {
-    console.log(form.getValues());
+    form.setValue("password", "");
+    form.setValue("confirmPassword", "");
+
     if (form.getValues("userName").length === 0) {
       form.setError("userName", { message: "user name is required." });
       return;

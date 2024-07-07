@@ -52,7 +52,6 @@ function SideBarLeft({ items, iconButtons }: SideBarLeftProps) {
         justifyContent: "space-between",
         height: "100%",
         width: "100%",
-        bgcolor: 0,
       }}
     >
       <Row>
@@ -160,7 +159,7 @@ function SideBarLeft({ items, iconButtons }: SideBarLeftProps) {
       sx={{
         height: "100%",
         width: "100%",
-        mb: 10,
+        // mb: 10,
         display: "flex",
         justifyContent: "space-around",
       }}
@@ -179,7 +178,7 @@ function SideBarLeft({ items, iconButtons }: SideBarLeftProps) {
   );
   return (
     <SideBar
-      sx={{ boxShadow: 3 }}
+      sx={{ boxShadow: 3, ml: -1.5 }}
       width="300px"
       direction="ltr"
       sideBarBody={sideBarBody}
