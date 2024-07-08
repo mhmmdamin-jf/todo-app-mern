@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 function TaskToolbarTitleItem() {
   const theme = useTheme();
-  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
+  const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const dispatcher = useDispatch<any>();
   //@ts-ignore
   const { showTasks } = useSelector((store: EnhancedStore) => store.taskSlice);
@@ -36,7 +36,7 @@ function TaskToolbarTitleItem() {
             onClick={() => dispatcher(setShowTaskGrid())}
             startIcon={<Window />}
           >
-            {isSmUp && "Grid"}
+            {isLgUp && "Grid"}
           </Button>
           <Grow in={showTasks === "Grid"}>
             <Box
@@ -50,7 +50,7 @@ function TaskToolbarTitleItem() {
             onClick={() => dispatcher(setShowTaskList())}
             startIcon={<SortRounded />}
           >
-            {isSmUp && "List"}
+            {isLgUp && "List"}
           </Button>
           <Grow in={showTasks === "List"}>
             <Box

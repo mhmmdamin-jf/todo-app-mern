@@ -53,7 +53,7 @@ todoRouter.route("/customDateTodos").get(todoController_1.getCustomDateTodos);
  * @memberof todoRouter
  * @returns {Array<object>} by resault
  */
-todoRouter.route("/").post(todoController_1.addTodo).get(todoController_1.getAllTodos);
+todoRouter.route("/").post(todoController_1.attachCategory, todoController_1.addTodo).get(todoController_1.getAllTodos);
 /**
  * function for delete or update todo or post a todo
  * @name /todo/:id

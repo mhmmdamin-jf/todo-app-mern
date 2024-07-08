@@ -32,16 +32,13 @@ export type iconButton = {
   icon: ReactNode;
 };
 function SideBarRight() {
-  const { showRight } = useSelector(
+  const { toggleBTN } = useSelector(
     //@ts-ignore
     (store: EnhancedStore) => store.sideBarSlice as any
   );
-  const themeBTN = document.getElementById("toggleThemeBTN");
-  console.log(themeBTN);
   const dispatcher = useDispatch();
   const theme = useTheme();
-  const { toggleTheme, appTheme } = useAppTheme();
-  console.log(appTheme);
+  const { toggleTheme, setDarkTheme } = useAppTheme();
   const sideBarBody = (
     <Box
       sx={{
@@ -64,7 +61,6 @@ function SideBarRight() {
           my: 1,
         },
         height: "100%",
-        overflowY: "auto",
         overflowX: "hidden",
       }}
     >
@@ -183,10 +179,15 @@ function SideBarRight() {
               label="Turn on reminder notifications"
             />
             <FormControlLabel
-              onClick={() => {
-                themeBTN?.click();
-              }}
-              control={<AntSwitch />}
+              onClick={() => {}}
+              control={
+                <AntSwitch
+                  onClick={() => {
+                    toggleBTN?.current?.click();
+                    console.log(12);
+                  }}
+                />
+              }
               sx={{
                 my: 0,
                 ml: -3,

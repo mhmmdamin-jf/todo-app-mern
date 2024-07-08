@@ -28,19 +28,20 @@ function SideBar({
         {
           overflowY: "scroll",
           direction: direction,
-          height: "100%",
+          height: "93%",
           width: width,
-          zIndex: theme.zIndex.drawer,
+          zIndex: 200,
+
           " .col": {
             justifyContent: "space-between",
             display: "flex",
             flexDirection: "column",
           },
+          " .row": { mr: 0 },
         },
         sx
       )}
     >
-      <Box sx={{ position: "fixed" }}></Box>
       <Col id={id}>
         <Row>{sideBarBody}</Row>
         <Row>{sideBarFooter}</Row>

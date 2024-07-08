@@ -9,6 +9,7 @@ type sideBarSliceType = {
   items: [string] | [];
   error: string | null;
   activeTaskShow: "grid" | "list";
+  toggleBTN: any;
 };
 
 const sideBarSliceInitialData: sideBarSliceType = {
@@ -19,6 +20,7 @@ const sideBarSliceInitialData: sideBarSliceType = {
   error: null,
   items: [],
   activeTaskShow: "list",
+  toggleBTN: null,
 };
 
 const sideBarRdeucer = createSlice({
@@ -38,13 +40,16 @@ const sideBarRdeucer = createSlice({
     toggleShowSideBarFeedBack(state) {
       state.showRight = false;
       state.showLeft = false;
-      state.showFeedBack = true;
+      state.showFeedBack = !state.showFeedBack;
     },
     setShowTasksList(state) {
       state.activeTaskShow = "list";
     },
     setShowTasksGrid(state) {
       state.activeTaskShow = "grid";
+    },
+    setToggleBTN(state, action) {
+      state.toggleBTN = action.payload;
     },
   },
   extraReducers(builder) {
@@ -81,4 +86,7 @@ export const {
   toggleShowSideBarLeft,
   toggleShowSideBarRight,
   toggleShowSideBarFeedBack,
+  setShowTasksGrid,
+  setShowTasksList,
+  setToggleBTN,
 } = sideBarRdeucer.actions;

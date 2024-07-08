@@ -8,29 +8,27 @@ import { useSelector } from "react-redux";
 import { EnhancedStore } from "@reduxjs/toolkit";
 
 function TaskToolbarHeadLine() {
-  //@ts-ignore
-  const { showLeft } = useSelector((store:EnhancedStore) => store.sideBarSlice as any);
+  const { showLeft } = useSelector(
+    //@ts-ignore
+    (store: EnhancedStore) => store.sideBarSlice as any
+  );
   return (
     <Box>
-      <Col>
-        <Box
-          sx={{
-            display: "flex",
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          ml: showLeft ? 4 : 0,
+          " .row": {
             width: "100%",
-            ml: showLeft ? 4 : 0,
-            " .row": {
-              width: "100%",
-            },
-          }}
-        >
-          <Row>
-            <TaskTitleContainer />
-          </Row>
-        </Box>
-        <Row>
-          <DateString id={"today"} />
-        </Row>
-      </Col>
+          },
+        }}
+      >
+        <TaskTitleContainer />
+      </Box>
+      <Box sx={{ pl: 8 }}>
+        <DateString id={"today"} />
+      </Box>
     </Box>
   );
 }

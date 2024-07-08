@@ -14,14 +14,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { theme, toggleTheme, appTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   return (
     <CookiesProvider>
       <AppQueryClient>
         <Provider store={store}>
           <CssBaseline />
           <ThemeProvider theme={theme}>
-            <ThemeContext.Provider value={{ toggleTheme, mode: appTheme }}>
+            <ThemeContext.Provider
+              value={{ toggleTheme, mode: theme.palette.mode }}
+            >
               <html lang="en">
                 <body>
                   <ReactQueryDevtools initialIsOpen={false} />

@@ -17,10 +17,12 @@ import { useSelector } from "react-redux";
 function TaskToolbarActions() {
   //@ts-ignore
   const { showRight } = useSelector(
+    //@ts-ignore
     (store: EnhancedStore) => store.sideBarSlice as any
   );
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
   return (
     <Box>
       <ButtonGroup
@@ -38,13 +40,13 @@ function TaskToolbarActions() {
         }}
       >
         <Button startIcon={<SwapVertRounded />}>
-          {isMdUp && !showRight && "Sort"}
+          {isLgUp && !showRight && "Sort"}
         </Button>
         <Button startIcon={<CropSquare />}>
-          {isMdUp && !showRight && "List"}
+          {isLgUp && !showRight && "List"}
         </Button>
         <Button startIcon={<LightbulbOutlined />}>
-          {isMdUp && !showRight && "Suggestions"}
+          {isLgUp && !showRight && "Suggestions"}
         </Button>
       </ButtonGroup>
     </Box>

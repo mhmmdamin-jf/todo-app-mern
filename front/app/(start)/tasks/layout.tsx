@@ -3,7 +3,7 @@
 import MainNav from "@/components/navigation/MainNav";
 import { Col, Row } from "react-bootstrap";
 import TaskToolbar from "@/components/tasks/toolbar/TaskToolbar";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import {
   Box,
   Collapse,
@@ -11,7 +11,9 @@ import {
   Stack,
   TextField,
   TextFieldProps,
+  Button,
 } from "@mui/material";
+import { ExtendButtonBase, ButtonTypeMap } from "@mui/material";
 import SideBar from "@/components/ui/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,6 +28,7 @@ import {
 } from "@mui/icons-material";
 import {
   getLeftSideBarItems,
+  setToggleBTN,
   toggleShowSideBarLeft,
   toggleShowSideBarRight,
 } from "@/slices/sideBarSlice";
@@ -40,21 +43,29 @@ import { useTheme } from "@/contexts/theme";
 import SideBarFeedBack from "@/components/ui/SideBarFeedBack";
 export default function Layout({ children }: { children: ReactNode }) {
   const dispatcher = useDispatch<any>();
+  const toggleBTN = useRef<
+    ExtendButtonBase<ButtonTypeMap<{}, "button">> | null | any
+  >(null);
   useEffect(function () {
     dispatcher(getLeftSideBarItems());
+  }, []);
+  useEffect(() => {
+    dispatcher(setToggleBTN(toggleBTN));
   }, []);
   const { showLeft, showRight, items, showFeedback } = useSelector(
     //@ts-ignore
     (store: EnhancedStore) => store.sideBarSlice as any
   );
-  const { theme, toggleTheme, appTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   return (
     <Box
       bgcolor={theme.palette.background.default}
       sx={{
         overflow: "hidden",
-        overflowBlock: "scroll",
+        // overflowBlock: "scroll",
         height: "100%",
+        position: "fixed",
+        width: "100%",
         "& .col": {
           height: "100%",
         },
@@ -65,18 +76,22 @@ export default function Layout({ children }: { children: ReactNode }) {
           <MainNav />
         </Row>
         <Row>
-          <button
+          <Button
+            ref={toggleBTN}
             style={{ opacity: 0 }}
             id="toggleThemeBTN"
-            onClick={() => toggleTheme()}
+            onClick={() => {
+              toggleTheme();
+            }}
           >
-            {appTheme}
-          </button>
+            asd
+          </Button>
         </Row>
         <Box
           sx={{
             height: "100%",
             display: "flex",
+            position: "relative",
             "& > div": {
               height: "100%",
             },
@@ -85,7 +100,14 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Collapse
             in={showLeft}
             orientation="horizontal"
-            sx={{ px: 0, pl: 1.5 }}
+            sx={{
+              px: 0,
+              pl: 1.5,
+              position: "absolute",
+              bottom: 0,
+              top: 0,
+              zIndex: 100,
+            }}
           >
             <Col id="sideBar">
               <SideBarLeft
@@ -101,7 +123,9 @@ export default function Layout({ children }: { children: ReactNode }) {
                   {
                     href: "/",
                     icon: <DoneOutline />,
-                    sx: { color: theme.palette.primary.main },
+                    sx: {
+                      color: theme.palette.primary.main,
+                    },
                   } as iconButton,
                 ]}
                 items={items}
@@ -114,7 +138,6 @@ export default function Layout({ children }: { children: ReactNode }) {
                 width: "100%",
                 "& .MuiBox-root": {
                   bgcolor: theme.palette.background.default,
-                  mt: 0.8,
                 },
               }}
             >
@@ -129,16 +152,25 @@ export default function Layout({ children }: { children: ReactNode }) {
               width: showFeedback ? "fit-content" : 0,
               " #sidebarFeedback": { height: "100%" },
               height: "100%",
+              " .MuiCollapse-wrapper": {
+                height: "100%",
+              },
             }}
           >
-            <Col id="sidebarRight" xs={{ span: "12" }}>
+            <Col id="sidebarFeedback" xs={{ span: "12" }}>
               <SideBarFeedBack />
             </Col>
           </Collapse>
           <Collapse
             in={showRight}
             orientation="horizontal"
-            sx={{ height: "100%" }}
+            sx={{
+              height: "100%",
+              " .col-12": {
+                height: "100%",
+                overflow: "scroll",
+              },
+            }}
           >
             <Col id="sidebar-r" xs={{ span: "12" }}>
               <SideBarRight />

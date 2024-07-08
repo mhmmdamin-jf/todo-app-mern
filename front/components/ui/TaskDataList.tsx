@@ -17,14 +17,11 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 export type taskType = {
-  id: string;
-  task: {
-    title: string;
-    dueDate: string;
-    completed: boolean;
-    importance: boolean;
-    category: string;
-  };
+  title: string;
+  dueDate: string;
+  isCompleted: boolean;
+  isImportant: boolean;
+  category: string;
 };
 interface TaskDataListProps {
   cells?: [task: taskType];
@@ -39,7 +36,7 @@ function TaskDataList({ cells }: TaskDataListProps) {
               cell.dueDate && compareWithToday(cell.dueDate[0]);
             return (
               <Box
-                key={cell.id}
+                key={cell.title}
                 sx={{
                   "& .col-1": {
                     textAlign: "end",
@@ -95,26 +92,35 @@ function TaskDataList({ cells }: TaskDataListProps) {
                           component={"div"}
                         >
                           <Typography component={"span"}>
-                            {cell.category}
+                            {/* {cell.category} */}
                           </Typography>
-                          <Circle
-                            sx={{
-                              fontSize: 6,
-                              color: isOverDueDate
-                                ? //@ts-ignore
-                                  theme.palette.rose.main
-                                : theme.palette.text.secondary,
-                            }}
-                          />
                           {cell.dueDate && (
-                            <Typography
-                              //@ts-ignore
-                              sx={{ color: theme.palette.rose.main }}
-                              component={"span"}
-                            >
-                              {isOverDueDate && "overDueDate"}
-                              {customDueDateFormat(new Date(cell?.dueDate[0]))}
-                            </Typography>
+                            <>
+                              <Circle
+                                sx={{
+                                  fontSize: 6,
+                                  color: isOverDueDate
+                                    ? //@ts-ignore
+                                      theme.palette.rose.main
+                                    : theme.palette.text.secondary,
+                                }}
+                              />
+
+                              <Typography
+                                //@ts-ignore
+                                sx={{
+                                  color: isOverDueDate
+                                    ? //@ts-ignore
+                                      theme.palette.rose.main
+                                    : theme.palette.text.secondary,
+                                }}
+                                component={"span"}
+                              >
+                                {customDueDateFormat(
+                                  new Date(cell?.dueDate[0])
+                                )}
+                              </Typography>
+                            </>
                           )}
                         </Typography>
                       </Row>

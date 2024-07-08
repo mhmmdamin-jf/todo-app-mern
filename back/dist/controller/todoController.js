@@ -12,24 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTodo = exports.updateTodo = exports.getCompletedTasks = exports.getCustomDateTodos = exports.deleteTodo = exports.getInDayTodos = exports.getAllTodos = exports.addTodo = void 0;
+exports.getTodo = exports.updateTodo = exports.getCompletedTasks = exports.getCustomDateTodos = exports.deleteTodo = exports.getInDayTodos = exports.getAllTodos = exports.addTodo = exports.attachCategory = void 0;
 const catchAsync_1 = require("../utils/catchAsync");
 const todoModel_1 = require("../Model/todoModel");
 const todoParams_1 = __importDefault(require("../utils/todoParams"));
 const APIError_1 = __importDefault(require("../utils/APIError"));
 const factoryFn_1 = require("../controller/factoryFn");
 const categoryModel_1 = require("../Model/categoryModel");
+exports.attachCategory = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const exitingCategory = yield categoryModel_1.categoryModel.findOne({
+        title: req.body.category,
+    });
+    req.body.category = exitingCategory === null || exitingCategory === void 0 ? void 0 : exitingCategory._id;
+    console.log("body:", req.body.category);
+    next();
+}));
 /**
  * async functino for adding new todo
  * @param {todo} todoFile
  */
-exports.addTodo = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    req.body.category = yield categoryModel_1.categoryModel.findOne({
-        title: req.body.category,
-    });
-    console.log(req.body);
-    (0, factoryFn_1.addOne)(todoModel_1.todo);
-}));
+exports.addTodo = (0, factoryFn_1.addOne)(todoModel_1.todo);
 /**
  * async function for getting all todos by some filter and params in pathname
  * @param {Request} req

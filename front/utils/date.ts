@@ -13,5 +13,4 @@ export const todayFormatDate = () => format(Date.now(), "eeee,MMMM d");
 export const customDateFormat = (date: Date) => format(date, "eeee,MMMM d");
 export const compareWithToday = (date: Date | string) =>
   isAfter(date, Date.now());
-export const customDueDateFormat = (date: Date) =>
-  format(date, "eeee,MMMM d, H:K");
+export const customDueDateFormat = (date: Date) => format(date, "dd/MM/yyyy");

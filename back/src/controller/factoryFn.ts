@@ -52,7 +52,10 @@ export const deleteOne = (model: typeof Model) =>
 export const addOne = (model: typeof Model) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("1");
       const doc = await model.create(req.body);
+      console.log("2");
+      console.log(doc);
       sendSuccessData(res, doc, 201);
     } catch (err) {
       console.log(err);

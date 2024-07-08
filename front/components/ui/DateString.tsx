@@ -7,11 +7,7 @@ import { todayFormatDate } from "@/utils/date";
 function DateString({ id }: { id: string }) {
   const nowDate = todayFormatDate();
   return (
-    <Typography
-      sx={{ marginInlineStart: 15, fontWeight: 2, fontSize: 13 }}
-      component={"h6"}
-      id={id}
-    >
+    <Typography sx={{ fontWeight: 2, fontSize: 13 }} component={"h6"} id={id}>
       {nowDate}
     </Typography>
   );

@@ -88,6 +88,7 @@ function SideBarFeedBack() {
             variant="text"
             sx={{
               fontSize: 10,
+              ml: -2.6,
               "&:hover": {
                 bgcolor: "transparent",
                 textDecoration: "underline",
@@ -101,6 +102,7 @@ function SideBarFeedBack() {
               display: "flex",
               gap: 1,
               alignItems: "center",
+              ml: -2.6,
             }}
           >
             <Button
@@ -108,8 +110,11 @@ function SideBarFeedBack() {
               disableElevation
               sx={{
                 bgcolor: theme.palette.primary.main,
-                borderRadius: 2,
+                borderRadius: 1.5,
                 width: "fit-content",
+                fontSize: 13,
+                textTransform: "capitalize",
+                minWidth: 0,
               }}
             >
               Sync
@@ -122,7 +127,6 @@ function SideBarFeedBack() {
   );
   return (
     <SideBar
-      id="sideBar-r"
       width="300px"
       direction="ltr"
       sideBarBody={sideBarBody}

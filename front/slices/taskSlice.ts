@@ -62,12 +62,13 @@ export const addTask = createAsyncThunk(
   async ({ values }: { values: any }) => {
     values.dueDate = new Date(values.dueDate);
     const postResautl = await axios.post(
-      `http://127.0.0.1:3002/api/todo`,
+      `http://127.0.0.1:3002/api/todo?sort=dueDate`,
       values,
       {
         withCredentials: true,
       }
     );
+    queryClient?.invalidateQueries({ queryKey: ["tasks"] });
     return postResautl.data;
   }
 );

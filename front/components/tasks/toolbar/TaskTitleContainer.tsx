@@ -22,41 +22,33 @@ function TaskTitleContainer() {
   return (
     <Box
       sx={{
-        "& .row": { alignItems: "center" },
-        "& .row *": { color: theme.palette.text.secondary },
+        display: "flex",
+        alignItems: "center",
       }}
     >
-      <Row>
-        {!showLeft && (
-          <Col xs={{ span: "1" }}>
-            <Button onClick={() => dispatcher(toggleShowSideBarLeft())}>
-              <Menu sx={{ fontSize: 20 }} />
-            </Button>
-          </Col>
-        )}
-        <Col xs={{ span: "3" }} sm={{ span: "2" }}>
-          <Typography
-            component={"span"}
-            sx={{
-              fontSize: 15,
-              textAlign: "center",
-              width: "100%",
-              whiteSpace: "none",
-              textTransform: "capitalize",
-            }}
-          >
-            {pathName.split("/")[2]}
-          </Typography>
-        </Col>
-        <Col xs={{ span: "1" }}>
-          <ToolBarButton />
-        </Col>
-        {!isSmDown && (
-          <Col>
-            <TaskToolbarTitleItem />
-          </Col>
-        )}
-      </Row>
+      {!showLeft && (
+        <Button onClick={() => dispatcher(toggleShowSideBarLeft())}>
+          <Menu sx={{ fontSize: 20 }} />
+        </Button>
+      )}
+      <Box>
+        <Typography
+          component={"span"}
+          sx={{
+            fontSize: 15,
+            textAlign: "center",
+            width: "100%",
+            whiteSpace: "none",
+            textTransform: "capitalize",
+          }}
+        >
+          {pathName.split("/")[2]}
+        </Typography>
+      </Box>
+      <Box>
+        <ToolBarButton />
+      </Box>
+      {!isSmDown && <TaskToolbarTitleItem />}
     </Box>
   );
 }

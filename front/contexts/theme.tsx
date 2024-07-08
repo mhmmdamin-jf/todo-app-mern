@@ -2,11 +2,12 @@
 import { createTheme, PaletteMode } from "@mui/material";
 
 import { Roboto } from "next/font/google";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 const fontName = Roboto({
   weight: ["500", "700", "300"],
   subsets: ["latin"],
 });
+
 interface colorsThemeProps {
   greenStone: {};
   blcakBerry: {};
@@ -107,12 +108,13 @@ const colorsTheme: colorsThemeProps = {
     100: "#071429",
   },
 };
-export const tokens = (mode: string, colorThemeName: colorsThemeProps) => {
+export const tokens = (dark: boolean, colorThemeName: colorsThemeProps) => {
   const str = `${colorThemeName}Dark`;
-  return mode === "dark"
+  return dark
     ? {
         primary: {
-          ...colorsTheme[colorThemeName],
+          //@ts-ignore
+          ...colorsTheme[`${colorThemeName}Dark`],
         },
         gray: {
           100: "#e9e9e9",
@@ -145,38 +147,32 @@ export const tokens = (mode: string, colorThemeName: colorsThemeProps) => {
       };
 };
 
-export const themeSettings = (mode: string, colorThemeName: string) => {
-  const colors = tokens(mode, colorThemeName);
+export const themeSettings = (dark: boolean, colorThemeName: string) => {
+  const colors = tokens(dark, colorThemeName as any as colorsThemeProps);
+  const x = dark
+    ? {
+        mode: "dark" as PaletteMode,
+        priamry: {
+          main: colors.primary[500],
+        },
+        ...colors,
+        background: { paper: "#e2e4d2", default: "#eee" },
+      }
+    : {
+        mode: "light" as PaletteMode,
+        text: { primary: "#fff", secondary: "#fff" },
+        priamry: {
+          main: colors.primary[500],
+        },
+        ...colors,
+        background: { paper: "#e2e4d2", default: "#111" },
+      };
   return {
     palette: {
       rose: {
         main: "#bf2f4a",
       },
-      ...(mode === "dark"
-        ? {
-            text: { primary: "#fff", secondary: "#fff" },
-            priamry: {
-              main: colors.primary[500],
-            },
-            // gray: {
-            //   main: colors.gray[500],
-            // },
-            ...colors,
-            // background: {
-            //   default: "#fcfcfc",
-            // },
-            background: { paper: "#e2e4d2", default: "#222" },
-          }
-        : {
-            priamry: {
-              main: colors.primary[500],
-            },
-            ...colors,
-            // background: {
-            //   default: "#11100f",
-            // },
-            background: { paper: "#e2e4d2", default: "#eee" },
-          }),
+      ...x,
     },
     typography: {
       fontFamily: fontName.style.fontFamily,
@@ -205,17 +201,24 @@ export const ThemeContext = createContext<themeContextType>(
 
 export function useTheme() {
   const { mode } = useContext(ThemeContext);
-  const [appTheme, setAppTheme] = useState<"dark" | "light">("light");
+  const [darkTheme, setDarkTheme] = useState<boolean>(false);
   const [colorTheme, setColorTheme] = useState<
     "primary" | "body" | "blackBerry" | "greenStone"
   >("primary");
   const toggleTheme = () => {
-    setAppTheme(appTheme === "dark" ? "light" : "dark");
+    setDarkTheme((dark) => !dark);
   };
-  const settings = themeSettings(appTheme, colorTheme);
-  const theme = createTheme(settings);
+
+  let settings = themeSettings(darkTheme, colorTheme);
+  let theme = createTheme(settings);
+  // useEffect(() => {
+  //   settings = themeSettings(appTheme, colorTheme);
+  //   theme = createTheme(settings);
+  // }, [appTheme]);
+  console.log(theme.palette.background.default);
   const values = {
-    appTheme,
+    darkTheme,
+    setDarkTheme,
     toggleTheme,
     setColorTheme,
     colorTheme,

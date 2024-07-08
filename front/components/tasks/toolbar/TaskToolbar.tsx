@@ -11,21 +11,16 @@ function TaskToolbar() {
       bgcolor={theme.palette.background.default}
       sx={{
         maxHeight: "fit-content",
-        mt: 1,
+        display: "flex",
+        "& *": { color: theme.palette.text.secondary },
       }}
     >
-      <Row>
-        <Col xs={{ span: "7" }}>
-          <TaskToolbarHeadLine />
-        </Col>
-        <Col
-          md={{ span: "4" }}
-          lg={{ offset: "2", span: "3" }}
-          xs={{ span: "3", offset: "1" }}
-        >
-          <TaskToolbarActions />
-        </Col>
-      </Row>
+      <Box sx={{ flexGrow: 1 }}>
+        <TaskToolbarHeadLine />
+      </Box>
+      <Box>
+        <TaskToolbarActions />
+      </Box>
     </Box>
   );
 }

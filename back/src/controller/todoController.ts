@@ -12,19 +12,22 @@ import {
 } from "../controller/factoryFn";
 import { categoryModel } from "../Model/categoryModel";
 
+export const attachCategory = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const exitingCategory = await categoryModel.findOne({
+      title: req.body.category,
+    });
+    req.body.category = exitingCategory?._id;
+    console.log("body:", req.body.category);
+    next();
+  }
+);
+
 /**
  * async functino for adding new todo
  * @param {todo} todoFile
  */
-export const addTodo = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    req.body.category = await categoryModel.findOne({
-      title: req.body.category,
-    });
-    console.log(req.body);
-    addOne(todo);
-  }
-);
+export const addTodo = addOne(todo);
 
 /**
  * async function for getting all todos by some filter and params in pathname

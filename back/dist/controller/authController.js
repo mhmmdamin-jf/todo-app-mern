@@ -129,8 +129,15 @@ exports.login = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 
 const restrict = (allowedRoles) => (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const roles = allowedRoles.split(" ");
-        const isAllowed = roles.includes(req.body.user.role);
-        if (!isAllowed || !req.body.user.role) {
+        if (!req.body.user) {
+            throw new APIError_1.default({
+                message: "unauthorized session.",
+                errorCode: 400,
+            });
+        }
+        const exitingUser = yield userModel_1.default.findById(req.body.user);
+        const isAllowed = roles.includes(exitingUser === null || exitingUser === void 0 ? void 0 : exitingUser.role);
+        if (!isAllowed) {
             throw new APIError_1.default({
                 message: "unauthorized session.",
                 errorCode: 400,
@@ -171,7 +178,7 @@ exports.protect = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(voi
                 errorCode: 400,
             });
         }
-        req.body.user = exitingUser;
+        req.body.user = exitingUser._id;
         if (
         // cookieTokenKey === "jwt" &&
         token) {

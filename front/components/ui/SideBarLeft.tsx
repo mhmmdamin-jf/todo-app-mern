@@ -178,7 +178,10 @@ function SideBarLeft({ items, iconButtons }: SideBarLeftProps) {
   );
   return (
     <SideBar
-      sx={{ boxShadow: 3, ml: -1.5 }}
+      sx={{
+        boxShadow: 3,
+        ml: -1.5,
+      }}
       width="300px"
       direction="ltr"
       sideBarBody={sideBarBody}

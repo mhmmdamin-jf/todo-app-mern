@@ -138,8 +138,15 @@ export const restrict = (allowedRoles: string) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roles = allowedRoles.split(" ");
-      const isAllowed = roles.includes(req.body.user.role);
-      if (!isAllowed || !req.body.user.role) {
+      if (!req.body.user) {
+        throw new APIError({
+          message: "unauthorized session.",
+          errorCode: 400,
+        });
+      }
+      const exitingUser = await User.findById(req.body.user);
+      const isAllowed = roles.includes(exitingUser?.role as string);
+      if (!isAllowed) {
         throw new APIError({
           message: "unauthorized session.",
           errorCode: 400,
@@ -163,12 +170,8 @@ export const restrict = (allowedRoles: string) =>
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // console.log(req.headers);
       const cookieTokenKey = req.headers?.cookie?.split("=")[0] as string;
       const token = req.headers?.cookie?.split("=")[1] as string;
-      // console.log(req.headers.cookie, req);
-      // console.log(req.cookies);
-      // const token = req.headers.jwt as string;
       const verifyResault = await verifyToken(token);
       //@ts-ignore
       const exitingUser = await User.findById(verifyResault.id);
@@ -178,11 +181,8 @@ export const protect = catchAsync(
           errorCode: 400,
         });
       }
-      req.body.user = exitingUser;
-      if (
-        // cookieTokenKey === "jwt" &&
-        token
-      ) {
+      req.body.user = exitingUser._id;
+      if (token) {
         if (!verifyResault) {
           throw new APIError({
             message: "unauthorized session.",

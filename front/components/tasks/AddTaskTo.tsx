@@ -19,6 +19,8 @@ import {
   TextField,
   Typography,
   useTheme,
+  Button,
+  alpha,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -29,6 +31,7 @@ import { useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
 import * as zod from "zod";
 import { usePathname } from "next/navigation";
+import { ButtonGroup } from "react-bootstrap";
 
 function AddTaskTo() {
   const theme = useTheme();
@@ -54,7 +57,7 @@ function AddTaskTo() {
         boxShadow: 2,
         borderRadius: 1,
         mx: "auto",
-        "& div": { padding: 0.6 },
+        "& div": { paddingInline: 0.6, paddingBlock: 0.4 },
         "& .MuiFormControl-root": {
           width: "100%",
         },
@@ -79,11 +82,13 @@ function AddTaskTo() {
           }}
         >
           <IconButton disableRipple>
-            <CircleOutlined />
+            <CircleOutlined
+              sx={{ fontSize: 21, color: theme.palette.primary.main }}
+            />
           </IconButton>
           <FormControlLabel
             label=""
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", ml: 0.3 }}
             control={
               <Input
                 name="title"
@@ -100,55 +105,87 @@ function AddTaskTo() {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "start",
+            justifyContent: "space-between",
           }}
         >
-          <IconButton
-            sx={{
-              p: 0,
-              m: 0,
-              " .MuiFormControlLabel-labelPlacementEnd": {
+          <ButtonGroup size="sm">
+            <IconButton
+              sx={{
+                p: 0,
                 m: 0,
+                " .MuiFormControlLabel-labelPlacementEnd": {
+                  m: 0,
+                },
+                " *": {
+                  fontSize: 20,
+                },
+              }}
+              disableRipple
+            >
+              <FormControlLabel
+                label=""
+                control={
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      name="dueDate"
+                      onChange={(e) => {
+                        form.setValue("dueDate", e?.toString() as string);
+                      }}
+                      format="MM/DD/YYYY"
+                      sx={{
+                        position: "relative",
+                        height: "30px",
+                        width: "30px",
+                        "& .MuiIconButton-root": {
+                          position: "absolute",
+                          left: -4,
+                          top: -6,
+                        },
+                        "& :hover": { bgcolor: "transparent" },
+                        "& .MuiOutlinedInput-input": { display: "none" },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          display: "none",
+                        },
+                      }}
+                      views={["day", "hours", "minutes"]}
+                      showDaysOutsideCurrentMonth
+                    />
+                  </LocalizationProvider>
+                }
+              />
+            </IconButton>
+            <IconButton>
+              <NotificationsOutlined
+                sx={{
+                  fontSize: 22,
+                }}
+              />
+            </IconButton>
+            <IconButton>
+              <LoopRounded
+                sx={{
+                  fontSize: 22,
+                }}
+              />
+            </IconButton>
+          </ButtonGroup>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              textTransform: "capitalize",
+              borderRadius: 0,
+              fontSize: 11,
+              borderColor: alpha(theme.palette.text.secondary, 0.1),
+              minWidth: "3px",
+              "&:hover": {
+                borderColor: alpha(theme.palette.text.secondary, 0.1),
+                backgroundColor: "transparent",
               },
             }}
-            disableRipple
           >
-            <FormControlLabel
-              label=""
-              control={
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    name="dueDate"
-                    onChange={(e) => {
-                      form.setValue("dueDate", e?.toString() as string);
-                    }}
-                    format="MM/DD/YYYY"
-                    sx={{
-                      position: "relative",
-                      height: "30px",
-                      width: "30px",
-                      "& .MuiIconButton-root": {
-                        position: "absolute",
-                        left: -10,
-                        top: -10,
-                      },
-                      "& :hover": { bgcolor: "transparent" },
-                      "& .MuiOutlinedInput-input": { display: "none" },
-                      "& .MuiOutlinedInput-notchedOutline": { display: "none" },
-                    }}
-                    views={["day", "hours", "minutes"]}
-                    showDaysOutsideCurrentMonth
-                  />
-                </LocalizationProvider>
-              }
-            />
-          </IconButton>
-          <IconButton>
-            <NotificationsOutlined />
-          </IconButton>
-          <IconButton>
-            <LoopRounded />
-          </IconButton>
+            add
+          </Button>
         </Box>
       </FormControl>
     </Box>

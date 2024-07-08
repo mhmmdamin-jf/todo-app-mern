@@ -32,6 +32,7 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
   const theme = useTheme();
   //@ts-ignore
   const { tasks } = useSelector(
+    //@ts-ignore
     (store: EnhancedStore) => store.taskSlice as any
   );
   return (
@@ -52,18 +53,18 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
       >
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: 3 }}></TableCell>
-            <TableCell>Title</TableCell>
+            <TableCell></TableCell>
+            <TableCell colSpan={4}>Title</TableCell>
             <TableCell>Due date</TableCell>
             <TableCell>Importance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tasks &&
+            //@ts-ignore
             tasks.map((cell) => {
               const isOverDueDate =
                 cell.dueDate && compareWithToday(cell.dueDate[0]);
-
               return (
                 <TableRow key={cell.id}>
                   <TableCell>
@@ -75,7 +76,7 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell>{cell.title}</TableCell>
+                  <TableCell colSpan={4}>{cell.title}</TableCell>
                   <TableCell
                     sx={{
                       fontSize: 16,
@@ -85,7 +86,6 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
                         : theme.palette.text.secondary,
                     }}
                   >
-                    {isOverDueDate && "overDueDate"}
                     {cell?.dueDate &&
                       customDueDateFormat(new Date(cell?.dueDate[0]))}
                   </TableCell>
@@ -108,16 +108,3 @@ function TaskDataGrid({ size = "small", cells }: TasksDataGridProps) {
 }
 
 export default TaskDataGrid;
-
-export const taskDummyData: [taskType] = [
-  {
-    task: {
-      title: "title1",
-      dueDate: "2000/01/01",
-      completed: true,
-      importance: true,
-      category: "today",
-    },
-    id: "id1",
-  },
-];

@@ -9,6 +9,7 @@ import {
   getInDayTodos,
   updateTodo,
   addTodo,
+  attachCategory,
 } from "../controller/todoController";
 import { getCategories } from "../controller/categoryController";
 
@@ -67,7 +68,7 @@ todoRouter.route("/customDateTodos").get(getCustomDateTodos);
  * @memberof todoRouter
  * @returns {Array<object>} by resault
  */
-todoRouter.route("/").post(addTodo).get(getAllTodos);
+todoRouter.route("/").post(attachCategory, addTodo).get(getAllTodos);
 
 /**
  * function for delete or update todo or post a todo
